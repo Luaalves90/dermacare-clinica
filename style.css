@@ -2135,3 +2135,179 @@ html body .hero {
         height: 220px;
     }
 }
+/* ===== CHATBOT INTELIGENTE - ESTILOS ADICIONAIS ===== */
+.message.bot strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.message.bot em {
+    color: var(--text-light);
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.message.bot a {
+    color: var(--secondary-color);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.message.bot ul {
+    margin: 10px 0 10px 20px;
+}
+
+.message.bot li {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+/* Botões de ação */
+.chat-option[data-action] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+}
+
+/* Indicador de digitação */
+.typing-indicator {
+    display: flex;
+    gap: 5px;
+    padding: 10px 15px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: var(--secondary-color);
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0% { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+/* ===== FORMULÁRIO DE AGENDAMENTO ATUALIZADO ===== */
+.modal-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.form-section {
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.form-section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 20px;
+}
+
+.form-section h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.policy-link {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.policy-link:hover {
+    text-decoration: underline;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.form-disclaimer {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Success message styles */
+.success-message {
+    text-align: center;
+    padding: 30px 20px;
+    animation: fadeIn 0.5s ease;
+}
+
+.success-message h3 {
+    color: var(--primary-color);
+    margin: 20px 0 15px;
+}
+
+.success-message p {
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+/* Responsividade do formulário */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .form-section h3 {
+        font-size: 1rem;
+    }
+    
+    .modal-content {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-group.checkbox label {
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    .form-disclaimer {
+        font-size: 0.8rem;
+    }
+}

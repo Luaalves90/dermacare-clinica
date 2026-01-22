@@ -91,48 +91,145 @@
     </button>
     
     <!-- Modal de Agendamento -->
-    <div class="modal" id="agendamentoModal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Agendar Consulta</h2>
-            <form id="agendamentoForm">
+<div class="modal" id="agendamentoModal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2><i class="fas fa-calendar-check"></i> Agendar Consulta</h2>
+        <p class="modal-subtitle">Preencha os dados e nossa equipe entrará em contato para confirmação</p>
+        
+        <form id="agendamentoForm">
+            <!-- Dados Pessoais -->
+            <div class="form-section">
+                <h3><i class="fas fa-user"></i> Dados Pessoais</h3>
+                
                 <div class="form-group">
                     <label for="nome">Nome Completo *</label>
-                    <input type="text" id="nome" required>
+                    <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+                    <small class="form-hint">Como consta no documento</small>
                 </div>
-                <div class="form-group">
-                    <label for="telefone">Telefone *</label>
-                    <input type="tel" id="telefone" required>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telefone">Telefone *</label>
+                        <input type="tel" id="telefone" placeholder="(11) 99999-9999" required>
+                        <small class="form-hint">Com DDD</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" placeholder="seu@email.com">
+                        <small class="form-hint">Para confirmação</small>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email">
+            </div>
+            
+            <!-- Preferências da Consulta -->
+            <div class="form-section">
+                <h3><i class="fas fa-calendar-alt"></i> Preferências</h3>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data">Data Preferencial</label>
+                        <input type="date" id="data" min="<?php echo date('Y-m-d'); ?>">
+                        <small class="form-hint">Data desejada</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="horario">Horário Preferencial</label>
+                        <select id="horario">
+                            <option value="">Selecione</option>
+                            <option value="manha">Manhã (8h-12h)</option>
+                            <option value="tarde">Tarde (14h-18h)</option>
+                            <option value="qualquer">Qualquer horário</option>
+                        </select>
+                        <small class="form-hint">Período desejado</small>
+                    </div>
                 </div>
+                
                 <div class="form-group">
-                    <label for="data">Data Preferencial</label>
-                    <input type="date" id="data">
-                </div>
-                <div class="form-group">
-                    <label for="horario">Horário Preferencial</label>
-                    <select id="horario">
+                    <label for="tipo-consulta">Tipo de Consulta</label>
+                    <select id="tipo-consulta">
                         <option value="">Selecione</option>
-                        <option value="manha">Manhã (8h-12h)</option>
-                        <option value="tarde">Tarde (14h-18h)</option>
+                        <option value="primeira">Primeira Consulta</option>
+                        <option value="retorno">Retorno/Follow-up</option>
+                        <option value="estetica">Procedimento Estético</option>
+                        <option value="cirurgia">Avaliação Cirúrgica</option>
+                        <option value="exame">Exame/Procedimento</option>
+                        <option value="emergencia">Casos Urgentes</option>
                     </select>
+                    <small class="form-hint">Para melhor atendimento</small>
                 </div>
+            </div>
+            
+            <!-- Contato e Observações -->
+            <div class="form-section">
+                <h3><i class="fas fa-comment-medical"></i> Informações Adicionais</h3>
+                
                 <div class="form-group">
-                    <label for="mensagem">Mensagem (opcional)</label>
-                    <textarea id="mensagem" rows="3"></textarea>
+                    <label for="whatsapp">Deseja receber lembretes por WhatsApp?</label>
+                    <select id="whatsapp">
+                        <option value="nao">Não, obrigado</option>
+                        <option value="sim">Sim, por favor</option>
+                    </select>
+                    <small class="form-hint">Lembramos 24h antes</small>
                 </div>
+                
+                <div class="form-group">
+                    <label for="mensagem">Mensagem/Observações (opcional)</label>
+                    <textarea id="mensagem" rows="4" placeholder="Descreva brevemente o motivo da consulta, sintomas, tratamentos anteriores, alergias..."></textarea>
+                    <small class="form-hint">Quanto mais informações, melhor o atendimento</small>
+                </div>
+            </div>
+            
+            <!-- Termos e Envio -->
+            <div class="form-section">
                 <div class="form-group checkbox">
                     <input type="checkbox" id="lgpd" required>
-                    <label for="lgpd">Concordo com a política de privacidade e tratamento de dados *</label>
+                    <label for="lgpd">
+                        Concordo com a <a href="#" class="policy-link">política de privacidade</a> e tratamento de dados conforme a LGPD *
+                    </label>
                 </div>
-                <button type="submit" class="btn-primary">Solicitar Agendamento</button>
-            </form>
+                
+                <div class="form-group checkbox">
+                    <input type="checkbox" id="confirmacao" required>
+                    <label for="confirmacao">
+                        Confirmo que serei contactado(a) para confirmação do agendamento *
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-paper-plane"></i> Solicitar Agendamento
+                    </button>
+                    
+                    <p class="form-disclaimer">
+                        <i class="fas fa-info-circle"></i> Entraremos em contato em até 24h úteis.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Campo oculto para URL do Google Script -->
+            <!-- ⚠️ SUBSTITUA "SUA_URL_AQUI" pela URL do SEU Google Script -->
+            <input type="hidden" id="googleScriptUrl" value="https://script.google.com/macros/s/AKfycbwrF3znPYG7T0pIcq259E4c2sQA4USmob0ngIpH0fnwv7QVxXH4_j9RzReFfG22Wbng/exec">
+        </form>
+        
+        <!-- Mensagem de sucesso (será mostrada via JavaScript) -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            <div class="success-checkmark">
+                <div class="check-icon">
+                    <span class="icon-line line-tip"></span>
+                    <span class="icon-line line-long"></span>
+                    <div class="icon-circle"></div>
+                    <div class="icon-fix"></div>
+                </div>
+            </div>
+            <h3>✅ Agendamento Solicitado!</h3>
+            <p>Recebemos sua solicitação. Em breve entraremos em contato para confirmação.</p>
+            <p>Verifique seu e-mail (inclua a caixa de spam).</p>
+            <button class="btn-secondary" onclick="closeModal()">Fechar</button>
         </div>
     </div>
-
+</div>
     <!-- Header -->
     <header class="header">
         <div class="container">

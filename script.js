@@ -4,8 +4,8 @@
 const CONFIG = {
     whatsappNumber: '5511999999999',
     totalDepoimentos: 3,
-    autoChatbotDelay: 3000, // 3 segundos
-    carrosselInterval: 5000, // 5 segundos
+    autoChatbotDelay: 3000,
+    carrosselInterval: 5000,
     clinicInfo: {
         phone: '(11) 99999-9999',
         address: 'Av. Paulista, 1000 - Bela Vista, São Paulo - SP',
@@ -41,10 +41,8 @@ function initApplication() {
     initTestePele();
     initImageOptimization();
     
-    // Abrir chatbot automaticamente após delay
     setTimeout(openChatbot, CONFIG.autoChatbotDelay);
     
-    // Botão de ligar para mobile
     if (window.innerWidth <= 768) {
         createCallButton();
     }
@@ -63,12 +61,10 @@ function initMenuMobile() {
     
     menuToggle.addEventListener('click', toggleMobileMenu);
     
-    // Fechar menu ao clicar em links
     document.querySelectorAll('.nav-list a').forEach(link => {
         link.addEventListener('click', closeMobileMenu);
     });
     
-    // Fechar menu ao clicar fora
     document.addEventListener('click', (e) => {
         if (!navList.contains(e.target) && !menuToggle.contains(e.target) && navList.classList.contains('active')) {
             closeMobileMenu();
@@ -85,7 +81,6 @@ function toggleMobileMenu() {
         ? '<i class="fas fa-times" aria-hidden="true"></i>' 
         : '<i class="fas fa-bars" aria-hidden="true"></i>';
     
-    // Acessibilidade
     menuToggle.setAttribute('aria-expanded', navList.classList.contains('active'));
 }
 
@@ -99,7 +94,7 @@ function closeMobileMenu() {
 }
 
 // ============================================
-// CHATBOT - Assistente Virtual
+// CHATBOT INTELIGENTE - VERSÃO MELHORADA
 // ============================================
 function initChatbot() {
     const chatbotToggle = document.querySelector('.chatbot-toggle');
@@ -110,7 +105,6 @@ function initChatbot() {
     
     if (!chatbotToggle) return;
     
-    // Event Listeners
     chatbotToggle.addEventListener('click', toggleChatbot);
     closeChatbot?.addEventListener('click', closeChatbotHandler);
     
@@ -118,7 +112,6 @@ function initChatbot() {
         option.addEventListener('click', handleChatOptionClick);
     });
     
-    // Enviar mensagem
     sendMessageBtn?.addEventListener('click', sendUserMessage);
     chatInput?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendUserMessage();
@@ -130,7 +123,6 @@ function toggleChatbot() {
     chatbotContainer?.classList.toggle('active');
     chatbotOpen = chatbotContainer?.classList.contains('active') || false;
     
-    // Focar no input quando abrir
     if (chatbotOpen) {
         setTimeout(() => {
             document.getElementById('chatInput')?.focus();
@@ -208,7 +200,6 @@ function handleDuvidasOption() {
     
     addBotMessageHTML(faqOptions);
     
-    // Adicionar eventos aos novos botões
     setTimeout(() => {
         document.querySelectorAll('[data-faq]').forEach(btn => {
             btn.addEventListener('click', handleFaqClick);
@@ -249,6 +240,9 @@ function handleWhatsAppOption() {
     }, 1500);
 }
 
+// ============================================
+// FUNÇÕES DO CHATBOT INTELIGENTE
+// ============================================
 function sendUserMessage() {
     const chatInput = document.getElementById('chatInput');
     const message = chatInput?.value.trim();
@@ -258,36 +252,192 @@ function sendUserMessage() {
     addUserMessage(message);
     chatInput.value = '';
     
+    showTypingIndicator();
+    
     setTimeout(() => {
+        hideTypingIndicator();
         handleUserQuery(message);
-    }, 1000);
+    }, 1000 + (Math.random() * 500));
 }
 
 function handleUserQuery(message) {
-    const msg = message.toLowerCase();
-    let resposta;
+    const msg = message.toLowerCase().trim();
+    let resposta = '';
     
-    if (msg.match(/(olá|oi|bom dia|boa tarde|boa noite)/i)) {
-        resposta = 'Olá! Como posso ajudá-lo hoje?';
-    } else if (msg.match(/(consulta|marcar|agendar|marcado)/i)) {
-        resposta = 'Para agendar uma consulta, clique no botão "Agendar Consulta" ou preencha o formulário de contato. Posso te ajudar com algo mais?';
-    } else if (msg.match(/(preço|valor|custa|cobrança|quanto)/i)) {
-        resposta = `O valor da consulta é <strong>R$ 350,00</strong>. Para procedimentos estéticos, o valor varia conforme o tratamento. Deseja ser encaminhado para nosso WhatsApp para um orçamento detalhado?`;
-    } else if (msg.match(/(telefone|falar|ligar|contato)/i)) {
-        resposta = `Nosso telefone é <strong>${CONFIG.clinicInfo.phone}</strong>. Também estamos disponíveis no WhatsApp. Gostaria de ser redirecionado?`;
-    } else if (msg.match(/(endereço|local|onde|chegar)/i)) {
-        resposta = `Estamos localizados em:<br><br>
-            📍 <strong>${CONFIG.clinicInfo.address}</strong><br><br>
-            ${CONFIG.clinicInfo.workingHours.weekdays}<br>
-            ${CONFIG.clinicInfo.workingHours.saturday}<br>
-            ${CONFIG.clinicInfo.workingHours.sunday}`;
-    } else if (msg.match(/(doutora|dra|mariana)/i)) {
-        resposta = 'A Dra. Mariana Santos é especialista em dermatologia com mais de 15 anos de experiência. Formada pela USP com pós-graduação em Harvard. Gostaria de saber mais sobre sua formação?';
-    } else {
-        resposta = 'Desculpe, não entendi completamente. Para questões mais específicas, recomendo que entre em contato por WhatsApp ou telefone. Posso te ajudar com agendamento ou informações básicas?';
+    const knowledgeBase = {
+        saudacoes: [/olá|oi|bom dia|boa tarde|boa noite|hello|hey/i, 
+            'Olá! Sou o assistente virtual da DermaCare. Como posso ajudá-lo hoje? 😊'],
+        
+        agendamento: [/agendar|marcar|consulta|marcado|horário|disponibilidade/i,
+            'Para agendar uma consulta, você pode:<br>1. Preencher nosso formulário online<br>2. Ligar para (11) 99999-9999<br>3. Falar no WhatsApp<br>Qual método prefere?'],
+        
+        preco: [/preço|valor|custa|quanto|orçamento|caro|barato/i,
+            `💰 <strong>Tabela de Valores:</strong><br><br>
+            🏥 <strong>Consulta Dermatológica:</strong> R$ 350,00<br>
+            💆 <strong>Limpeza de Pele:</strong> R$ 250,00<br>
+            ✨ <strong>Botox:</strong> R$ 800-1200 (por área)<br>
+            🔬 <strong>Preenchimento:</strong> R$ 900-1500<br>
+            📋 <strong>Avaliação:</strong> <strong>GRATUITA</strong> para procedimentos estéticos<br><br>
+            <em>Valores podem variar conforme a necessidade do paciente.</em>`],
+        
+        dra: [/doutora|dra|mariana|santos|médica|especialista/i,
+            `👩‍⚕️ <strong>Dra. Mariana Santos</strong><br><br>
+            • CRM-SP: 123456<br>
+            • Formada pela USP<br>
+            • Pós-graduação em Harvard<br>
+            • 15+ anos de experiência<br>
+            • Especialista em Dermatologia Estética<br><br>
+            Gostaria de agendar com ela?`],
+        
+        servicos: [/servi[oç]os|tratamento|procedimento|fazer|realizar/i,
+            `🩺 <strong>Nossos Serviços:</strong><br><br>
+            1. <strong>Dermatologia Clínica</strong> - Doenças da pele<br>
+            2. <strong>Estética Facial</strong> - Botox, preenchimento<br>
+            3. <strong>Cirurgia Dermatológica</strong> - Remoção de pintas<br>
+            4. <strong>Oncodermatologia</strong> - Câncer de pele<br>
+            5. <strong>Tricologia</strong> - Queda de cabelo<br>
+            6. <strong>Estética Corporal</strong> - Celulite, gordura localizada<br><br>
+            Qual área te interessa mais?`],
+        
+        contato: [/telefone|falar|ligar|contato|whatsapp|zap|endere[çc]o|local|onde|chegar/i,
+            `📞 <strong>Contato:</strong><br><br>
+            <strong>Telefone:</strong> (11) 99999-9999<br>
+            <strong>WhatsApp:</strong> <a href="https://wa.me/5511999999999" target="_blank">Clique aqui</a><br>
+            <strong>E-mail:</strong> contato@dermacare.com.br<br>
+            <strong>Endereço:</strong> Av. Paulista, 1000 - São Paulo<br>
+            <strong>Horário:</strong> Seg-Sex: 8h-19h | Sáb: 8h-14h`],
+        
+        plano: [/plano|conv[êe]nio|unimed|amil|bradesco|sulamerica|cobertura/i,
+            `🏥 <strong>Planos Atendidos:</strong><br><br>
+            ✅ Unimed<br>
+            ✅ Amil<br>
+            ✅ Bradesco Saúde<br>
+            ✅ SulAmérica<br>
+            ✅ NotreDame Intermédica<br>
+            ✅ Porto Seguro<br><br>
+            <em>Entre em contato para confirmar a cobertura do seu plano.</em>`],
+        
+        urgente: [/urgente|emerg[êe]ncia|dor|sangrando|inflamado|grave|preciso agora/i,
+            `🚨 <strong>ATENÇÃO:</strong> Casos urgentes<br><br>
+            Para situações de emergência:<br>
+            1. <strong>Ligue imediatamente:</strong> (11) 99999-9999<br>
+            2. <strong>Procure um pronto-socorro</strong> se for muito grave<br>
+            3. <strong>Hospital recomendado:</strong> Sírio-Libanês<br><br>
+            <strong>NÃO espere!</strong>`],
+        
+        obrigado: [/obrigado|obrigada|valeu|agrade[çc]o|grato|gratidão/i,
+            'Por nada! Fico feliz em ajudar. 😊<br>Precisa de mais alguma informação?'],
+        
+        tchau: [/tchau|adeus|at[ée] logo|flw|fui|bye|até/i,
+            'Até logo! Espero ter ajudado. Qualquer dúvida, estou aqui! 👋']
+    };
+    
+    let respostaEncontrada = false;
+    
+    for (const [categoria, [padrao, respostaCor]] of Object.entries(knowledgeBase)) {
+        if (padrao.test(msg)) {
+            resposta = respostaCor;
+            respostaEncontrada = true;
+            
+            if (categoria === 'agendamento') {
+                setTimeout(() => {
+                    addActionButtons();
+                }, 500);
+            }
+            break;
+        }
     }
     
-    addBotMessageHTML(resposta);
+    if (!respostaEncontrada) {
+        resposta = `Desculpe, não entendi completamente. 😅<br><br>
+        Posso te ajudar com:<br>
+        • 📅 <strong>Agendamento de consultas</strong><br>
+        • 💰 <strong>Valores e orçamentos</strong><br>
+        • 🏥 <strong>Informações sobre serviços</strong><br>
+        • 📍 <strong>Localização e contato</strong><br><br>
+        O que você gostaria de saber?`;
+        
+        setTimeout(() => {
+            addActionButtons();
+        }, 500);
+    }
+    
+    setTimeout(() => {
+        addBotMessageHTML(resposta);
+    }, 800 + (Math.random() * 400));
+}
+
+function addActionButtons() {
+    const actionButtons = `
+        <div class="message bot options">
+            <p>Escolha uma ação rápida:</p>
+            <button class="chat-option" data-action="agendar-form">📅 Formulário de Agendamento</button>
+            <button class="chat-option" data-action="whatsapp">💬 Falar no WhatsApp</button>
+            <button class="chat-option" data-action="ligar">📞 Ligar Agora</button>
+            <button class="chat-option" data-action="servicos">🩺 Ver Todos Serviços</button>
+        </div>
+    `;
+    
+    addBotMessageHTML(actionButtons);
+    
+    setTimeout(() => {
+        document.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', handleActionButton);
+        });
+    }, 100);
+}
+
+function handleActionButton(e) {
+    const action = e.currentTarget.getAttribute('data-action');
+    
+    switch(action) {
+        case 'agendar-form':
+            addBotMessage('Abrindo formulário de agendamento...');
+            setTimeout(() => {
+                closeChatbotHandler();
+                openModal('agendamentoModal');
+            }, 1000);
+            break;
+            
+        case 'whatsapp':
+            addBotMessage('Redirecionando para WhatsApp...');
+            setTimeout(() => {
+                window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=Olá! Vi seu site e gostaria de mais informações.`, '_blank');
+            }, 1000);
+            break;
+            
+        case 'ligar':
+            addBotMessage(`Ligando para ${CONFIG.clinicInfo.phone}...`);
+            setTimeout(() => {
+                window.location.href = `tel:${CONFIG.clinicInfo.phone.replace(/\D/g, '')}`;
+            }, 1000);
+            break;
+            
+        case 'servicos':
+            handleServicosOption();
+            break;
+    }
+}
+
+function showTypingIndicator() {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot typing-indicator';
+    typingDiv.id = 'typing-indicator';
+    typingDiv.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+    chatbotMessages.appendChild(typingDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
 }
 
 function addUserMessage(text) {
@@ -343,30 +493,24 @@ function initModalAgendamento() {
     
     if (!modal) return;
     
-    // Adicionar atributo aos botões existentes
     document.querySelectorAll('#openAgendamento, #openAgendamento2, .btn-agendar-teste').forEach(btn => {
         btn.setAttribute('data-modal', 'agendamento');
     });
     
-    // Abrir modal
     openButtons.forEach(button => {
         button.addEventListener('click', () => openModal('agendamentoModal'));
     });
     
-    // Fechar modal
     closeButton?.addEventListener('click', closeModal);
     
-    // Fechar ao clicar fora
     modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
     });
     
-    // Fechar com ESC
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
     });
     
-    // Enviar formulário
     form?.addEventListener('submit', handleAgendamentoSubmit);
 }
 
@@ -386,32 +530,168 @@ function closeModal() {
     document.body.style.overflow = 'auto';
 }
 
-function handleAgendamentoSubmit(e) {
+async function handleAgendamentoSubmit(e) {
     e.preventDefault();
     
     const form = e.target;
-    const nome = form.querySelector('#nome')?.value.trim();
-    const telefone = form.querySelector('#telefone')?.value.trim();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    // Dados do formulário
+    const agendamentoData = {
+        nome: document.getElementById('nome').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        email: document.getElementById('email').value.trim() || '',
+        data: document.getElementById('data').value,
+        horario: document.getElementById('horario').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        tipoConsulta: document.getElementById('tipo-consulta').value,
+        mensagem: document.getElementById('mensagem').value.trim() || ''
+    };
     
     // Validação
-    if (!validateNome(nome)) {
+    if (!validateNome(agendamentoData.nome)) {
         showAlert('Por favor, insira um nome válido (mínimo 3 caracteres)', 'error');
         return;
     }
     
-    if (!validateTelefone(telefone)) {
+    if (!validateTelefone(agendamentoData.telefone)) {
         showAlert('Por favor, insira um telefone válido com DDD', 'error');
         return;
     }
     
-    // Simular envio
-    showAlert('Solicitação de agendamento enviada com sucesso! Entraremos em contato em breve para confirmar.', 'success');
+    if (agendamentoData.email && !validateEmail(agendamentoData.email)) {
+        showAlert('Por favor, insira um e-mail válido', 'error');
+        return;
+    }
     
-    // Resetar formulário
-    form.reset();
+    // Desabilitar botão durante envio
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Agendando...';
     
-    // Fechar modal após sucesso
-    setTimeout(closeModal, 2000);
+    try {
+        // Enviar para Google Apps Script
+        const response = await enviarParaGoogleCalendar(agendamentoData);
+        
+        if (response.success) {
+            showAlert('✅ Agendamento realizado com sucesso! Confirmação enviada por email.', 'success');
+            
+            // Resetar formulário
+            form.reset();
+            
+            // Fechar modal após 3 segundos
+            setTimeout(() => {
+                closeModal();
+                
+                // Abrir WhatsApp se solicitado
+                if (agendamentoData.whatsapp === 'sim') {
+                    setTimeout(() => {
+                        const whatsappMsg = `Olá! Agendei minha consulta na DermaCare para ${agendamentoData.data || 'breve'}. Nome: ${agendamentoData.nome}`;
+                        window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(whatsappMsg)}`, '_blank');
+                    }, 1000);
+                }
+            }, 3000);
+        } else {
+            throw new Error(response.error || 'Erro no agendamento');
+        }
+        
+    } catch (error) {
+        console.error('Erro no agendamento:', error);
+        showAlert(`❌ Erro: ${error.message}. Tente novamente ou ligue para (11) 99999-9999`, 'error');
+        
+        // Fallback: Mostrar modal com informações para contato direto
+        mostrarFallbackContato(agendamentoData);
+        
+    } finally {
+        // Reabilitar botão
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Solicitar Agendamento';
+    }
+}
+
+// Função para enviar dados para Google Apps Script
+async function enviarParaGoogleCalendar(data) {
+const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwrF3znPYG7T0pIcq259E4c2sQA4USmob0ngIpH0fnwv7QVxXH4_j9RzReFfG22Wbng/exec'; // ← COLE AQUI SUA URL
+    
+    const response = await fetch(googleScriptUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        mode: 'no-cors' // Importante para evitar CORS
+    });
+    
+    // Como usamos no-cors, não podemos ler a resposta diretamente
+    // Mas podemos assumir sucesso se não houver erro de rede
+    return { success: true, message: 'Agendamento enviado para processamento' };
+    
+    // Para debug (remova o mode: 'no-cors' e use isto):
+    // if (!response.ok) throw new Error('Erro na comunicação com o servidor');
+    // return await response.json();
+}
+
+// Fallback caso o Google Script falhe
+function mostrarFallbackContato(data) {
+    const modalContent = `
+        <div class="fallback-agendamento">
+            <h3>📞 Agendamento Alternativo</h3>
+            <p>Nosso sistema automático está temporariamente indisponível.</p>
+            <p>Por favor, entre em contato diretamente:</p>
+            
+            <div class="contact-info">
+                <p><strong>Telefone:</strong> (11) 99999-9999</p>
+                <p><strong>WhatsApp:</strong> <a href="https://wa.me/5511999999999" target="_blank">Clique aqui</a></p>
+                <p><strong>Email:</strong> contato@dermacare.com.br</p>
+            </div>
+            
+            <div class="patient-data">
+                <h4>Seus dados para referência:</h4>
+                <p><strong>Nome:</strong> ${data.nome}</p>
+                <p><strong>Telefone:</strong> ${data.telefone}</p>
+                ${data.data ? `<p><strong>Data preferida:</strong> ${formatarDataBR(data.data)}</p>` : ''}
+                ${data.horario ? `<p><strong>Horário preferido:</strong> ${data.horario}</p>` : ''}
+            </div>
+            
+            <button onclick="copiarDadosParaAreaTransferencia()" class="btn-secondary">
+                📋 Copiar Dados
+            </button>
+        </div>
+    `;
+    
+    const existingFallback = document.querySelector('.fallback-modal');
+    if (existingFallback) existingFallback.remove();
+    
+    const fallbackModal = document.createElement('div');
+    fallbackModal.className = 'modal fallback-modal active';
+    fallbackModal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="this.parentElement.parentElement.remove()">&times;</span>
+            ${modalContent}
+        </div>
+    `;
+    
+    document.body.appendChild(fallbackModal);
+}
+
+function formatarDataBR(dataString) {
+    const [ano, mes, dia] = dataString.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
+function copiarDadosParaAreaTransferencia() {
+    const data = {
+        nome: document.getElementById('nome').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        data: document.getElementById('data').value,
+        horario: document.getElementById('horario').value
+    };
+    
+    const texto = `Agendamento DermaCare:\nNome: ${data.nome}\nTelefone: ${data.telefone}\nEmail: ${data.email}\nData: ${data.data}\nHorário: ${data.horario}`;
+    
+    navigator.clipboard.writeText(texto)
+        .then(() => showAlert('✅ Dados copiados para área de transferência!', 'success'))
+        .catch(() => showAlert('❌ Não foi possível copiar os dados', 'error'));
 }
 
 // ============================================
@@ -424,7 +704,6 @@ function initCarrosselDepoimentos() {
     
     if (!prevBtn || !nextBtn) return;
     
-    // Event Listeners
     prevBtn.addEventListener('click', showPreviousDepoimento);
     nextBtn.addEventListener('click', showNextDepoimento);
     
@@ -432,10 +711,8 @@ function initCarrosselDepoimentos() {
         indicador.addEventListener('click', () => showDepoimento(index));
     });
     
-    // Auto-rotacionar
     startCarrosselAutoRotation();
     
-    // Pausar ao passar o mouse
     const container = document.querySelector('.depoimentos-container');
     container?.addEventListener('mouseenter', stopCarrosselAutoRotation);
     container?.addEventListener('mouseleave', startCarrosselAutoRotation);
@@ -462,19 +739,17 @@ function updateCarrossel() {
     const depoimentos = document.querySelectorAll('.depoimento-card');
     const indicadores = document.querySelectorAll('.indicador');
     
-    // Atualizar depoimentos
     depoimentos.forEach((depoimento, index) => {
         depoimento.classList.toggle('active', index === currentDepoimento);
     });
     
-    // Atualizar indicadores
     indicadores.forEach((indicador, index) => {
         indicador.classList.toggle('active', index === currentDepoimento);
     });
 }
 
 function startCarrosselAutoRotation() {
-    stopCarrosselAutoRotation(); // Limpar intervalo anterior
+    stopCarrosselAutoRotation();
     
     carrosselInterval = setInterval(() => {
         showNextDepoimento();
@@ -510,7 +785,6 @@ function handleContatoSubmit(e) {
     const email = form.querySelector('#contatoEmail')?.value.trim();
     const mensagem = form.querySelector('#contatoMensagem')?.value.trim();
     
-    // Validação
     if (!validateNome(nome)) {
         showAlert('Por favor, insira um nome válido', 'error');
         return;
@@ -526,7 +800,6 @@ function handleContatoSubmit(e) {
         return;
     }
     
-    // Simular envio
     showAlert('Mensagem enviada com sucesso! Entraremos em contato em breve.', 'success');
     form.reset();
 }
@@ -549,7 +822,6 @@ function handleNewsletterSubmit(e) {
         return;
     }
     
-    // Simular inscrição
     showAlert('Obrigado por se inscrever em nossa newsletter!', 'success');
     emailInput.value = '';
 }
@@ -586,10 +858,8 @@ function initTestePele() {
         respostas: []
     };
     
-    // Inicializar
     renderizarPergunta(perguntas[0]);
     
-    // Adicionar eventos
     document.querySelectorAll('.opcao').forEach(opcao => {
         opcao.addEventListener('click', handleOpcaoClick);
     });
@@ -598,16 +868,12 @@ function initTestePele() {
         const opcao = e.currentTarget;
         const tipo = opcao.getAttribute('data-tipo');
         
-        // Remover seleção anterior
         document.querySelectorAll('.opcao').forEach(o => o.classList.remove('selecionada'));
         
-        // Selecionar opção atual
         opcao.classList.add('selecionada');
         
-        // Armazenar resposta
         estadoTeste.respostas[estadoTeste.perguntaAtual] = tipo;
         
-        // Próxima pergunta ou resultado
         setTimeout(() => {
             estadoTeste.perguntaAtual++;
             
@@ -624,10 +890,8 @@ function initTestePele() {
         const titulo = perguntaDiv.querySelector('h3');
         const opcoesDiv = perguntaDiv.querySelectorAll('.opcao');
         
-        // Atualizar pergunta
         titulo.textContent = perguntaObj.pergunta;
         
-        // Atualizar opções
         opcoesDiv.forEach((opcao, index) => {
             if (perguntaObj.opcoes[index]) {
                 opcao.textContent = perguntaObj.opcoes[index].texto;
@@ -645,7 +909,6 @@ function initTestePele() {
         const tipoPeleSpan = document.getElementById('tipo-pele');
         const perguntaDiv = document.querySelector('.pergunta');
         
-        // Calcular tipo predominante
         const tipoPredominante = calcularTipoPredominante(estadoTeste.respostas);
         const tiposPele = {
             oleosa: "Pele Oleosa",
@@ -656,12 +919,10 @@ function initTestePele() {
             reativa: "Pele Reativa"
         };
         
-        // Atualizar UI
         perguntaDiv.style.display = 'none';
         resultadoDiv.classList.add('mostrar');
         tipoPeleSpan.textContent = tiposPele[tipoPredominante] || "Pele Normal";
         
-        // Adicionar botões de ação
         adicionarBotoesResultado();
     }
     
@@ -685,31 +946,25 @@ function initTestePele() {
     function adicionarBotoesResultado() {
         const resultadoDiv = document.querySelector('.resultado');
         
-        // Limpar botões anteriores
         const botoesAnteriores = resultadoDiv.querySelector('.botoes-resultado');
         if (botoesAnteriores) botoesAnteriores.remove();
         
-        // Criar novos botões
         const botoesDiv = document.createElement('div');
         botoesDiv.className = 'botoes-resultado';
         
-        // Botão Agendar
         const btnAgendar = document.createElement('button');
         btnAgendar.className = 'btn-agendar-teste';
         btnAgendar.textContent = 'Agendar Avaliação Personalizada';
         btnAgendar.addEventListener('click', () => openModal('agendamentoModal'));
         
-        // Botão Reiniciar
         const btnReiniciar = document.createElement('button');
         btnReiniciar.className = 'btn-reiniciar-teste';
         btnReiniciar.textContent = 'Fazer Teste Novamente';
         btnReiniciar.addEventListener('click', reiniciarTeste);
         
-        // Adicionar botões
         botoesDiv.appendChild(btnAgendar);
         botoesDiv.appendChild(btnReiniciar);
         
-        // Inserir antes do aviso
         const aviso = resultadoDiv.querySelector('.aviso');
         aviso.insertAdjacentElement('beforebegin', botoesDiv);
     }
@@ -718,10 +973,8 @@ function initTestePele() {
         estadoTeste.perguntaAtual = 0;
         estadoTeste.respostas = [];
         
-        // Mostrar primeira pergunta
         renderizarPergunta(perguntas[0]);
         
-        // Esconder resultado
         document.querySelector('.pergunta').style.display = 'block';
         document.querySelector('.resultado').classList.remove('mostrar');
     }
@@ -746,7 +999,6 @@ function initScrollSuave() {
             behavior: 'smooth'
         });
         
-        // Fechar menu mobile se aberto
         closeMobileMenu();
     });
 }
@@ -755,7 +1007,6 @@ function initScrollSuave() {
 // OTIMIZAÇÃO DE IMAGENS
 // ============================================
 function initImageOptimization() {
-    // Carregamento lazy para imagens da galeria
     const imagensGaleria = document.querySelectorAll('.galeria-imagem-real');
     
     if ('IntersectionObserver' in window) {
@@ -774,7 +1025,6 @@ function initImageOptimization() {
         
         imagensGaleria.forEach(img => imgObserver.observe(img));
     } else {
-        // Fallback para navegadores antigos
         imagensGaleria.forEach(img => {
             img.onload = () => img.classList.add('loaded');
         });
@@ -791,7 +1041,6 @@ function createCallButton() {
     ligarBtn.innerHTML = '<i class="fas fa-phone" aria-hidden="true"></i>';
     ligarBtn.setAttribute('aria-label', 'Ligar para clínica');
     
-    // Estilos inline para performance
     ligarBtn.style.cssText = `
         position: fixed;
         bottom: 30px;
@@ -846,13 +1095,11 @@ function validateMensagem(mensagem) {
 }
 
 function showAlert(message, type = 'info') {
-    // Criar elemento de alerta
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
     alertDiv.setAttribute('role', 'alert');
     
-    // Estilos
     alertDiv.style.cssText = `
         position: fixed;
         top: 100px;
@@ -873,16 +1120,13 @@ function showAlert(message, type = 'info') {
         alertDiv.style.backgroundColor = '#0ABAB5';
     }
     
-    // Adicionar ao body
     document.body.appendChild(alertDiv);
     
-    // Remover após 5 segundos
     setTimeout(() => {
         alertDiv.style.animation = 'slideOut 0.3s ease';
         setTimeout(() => alertDiv.remove(), 300);
     }, 5000);
     
-    // Adicionar animação CSS
     if (!document.querySelector('#alert-animations')) {
         const style = document.createElement('style');
         style.id = 'alert-animations';
@@ -916,12 +1160,10 @@ function showAlert(message, type = 'info') {
 // ============================================
 // PERFORMANCE E OTIMIZAÇÕES
 // ============================================
-// Debounce para eventos de resize
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-        // Recriar botão de ligar se necessário
         const ligarBtn = document.querySelector('.ligar-btn');
         if (window.innerWidth <= 768 && !ligarBtn) {
             createCallButton();
@@ -931,7 +1173,6 @@ window.addEventListener('resize', () => {
     }, 250);
 });
 
-// Prevenir múltiplas submissões de formulário
 document.addEventListener('submit', (e) => {
     const form = e.target;
     const submitBtn = form.querySelector('button[type="submit"]');
@@ -940,7 +1181,6 @@ document.addEventListener('submit', (e) => {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
         
-        // Reativar após 3 segundos (simulação)
         setTimeout(() => {
             if (submitBtn) {
                 submitBtn.disabled = false;
