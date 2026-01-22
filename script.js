@@ -610,7 +610,7 @@ async function handleAgendamentoSubmit(e) {
 
 // Função para enviar dados para Google Apps Script
 async function enviarParaGoogleCalendar(data) {
-const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwrF3znPYG7T0pIcq259E4c2sQA4USmob0ngIpH0fnwv7QVxXH4_j9RzReFfG22Wbng/exec'; // ← COLE AQUI SUA URL
+    const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzKa1k1BbCTS9bY_Pxe0VOmUgw8sytxKS-WII-lcK2XZdR7XcNxRpgidB1SLGZBCDHL/exec'; // ← COLE AQUI SUA URL
     
     const response = await fetch(googleScriptUrl, {
         method: 'POST',
