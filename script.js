@@ -29,7 +29,7 @@ const CONFIG = {
     // DURAÇÃO DA CONSULTA EM MINUTOS
     duracaoConsulta: 60,
     // URL DO GOOGLE APPS SCRIPT
-    googleScriptUrl: 'https://script.google.com/macros/s/AKfycbwIujv6emf2BD9lqlQMJgq42Zidl0DNkjD6C38puvEuadu3hZD28mxZ-4sRnaKrknfG/exec'
+    googleScriptUrl: 'https://script.google.com/macros/s/AKfycbypdxaHUXlGcY1dzcu1DinBczHDzBcmvekvp2on0w7iX1Om_pC0rkfk4CcLkR5kKtvn/exec'
 };
 
 let currentDepoimento = 0;
@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
         initCarrosselDepoimentos();
         initFormularios();
         initScrollSuave();
-        initTestePele();
         initSistemaHorarios();
         
         // Abrir chatbot automático após delay
@@ -176,9 +175,8 @@ function configurarBotoesAberturaModal() {
         '#openAgendamento',           // Header
         '#openAgendamento2',          // Hero
         '#openAgendamento3',          // Footer
-        '.btn-agendar-teste',         // Teste de pele
         '.chat-option[data-option="agendar"]',
-        '.chat-option[data-action="agendar-form"]'
+        '.chat-option[data-action="agendar"]'
     ];
     
     seletoresBotoes.forEach(function(seletor) {
@@ -191,16 +189,6 @@ function configurarBotoesAberturaModal() {
             });
         });
     });
-    
-    // Também configurar manualmente botões comuns
-    const botaoHeader = document.querySelector('.btn-agendar');
-    if (botaoHeader && !botaoHeader.id) {
-        botaoHeader.id = 'openAgendamento';
-        botaoHeader.addEventListener('click', function(e) {
-            e.preventDefault();
-            openModal('agendamentoModal');
-        });
-    }
     
     console.log(`✅ ${seletoresBotoes.length} tipos de botões configurados para abrir modal`);
 }
@@ -259,7 +247,7 @@ function closeModal() {
 }
 
 // ============================================
-// 3. CHATBOT - CORREÇÃO COMPLETA
+// 3. CHATBOT INTELIGENTE
 // ============================================
 function initChatbot() {
     console.log('🔧 Configurando chatbot...');
@@ -327,29 +315,26 @@ function closeChatbotHandler() {
 
 function configurarOpcoesChatbot() {
     document.addEventListener('click', function(e) {
-        // Verificar se clicou em uma opção do chatbot
         const chatOption = e.target.closest('.chat-option');
         if (chatOption) {
             e.preventDefault();
             e.stopPropagation();
             
-            const optionType = chatOption.getAttribute('data-option') || 
-                              chatOption.getAttribute('data-action') ||
-                              chatOption.getAttribute('data-faq');
+            const action = chatOption.getAttribute('data-action');
             
-            console.log('🤖 Opção do chatbot selecionada:', optionType);
+            console.log('🤖 Opção do chatbot selecionada:', action);
             
-            if (optionType === 'agendar' || optionType === 'agendar-form') {
-                // Adicionar mensagem do bot
-                addBotMessage('Ótimo! Vou abrir o formulário de agendamento para você...');
+            if (action) {
+                const resposta = getBotResponseForOption(action);
+                addBotMessage(resposta);
                 
-                // Fechar chatbot e abrir modal
-                setTimeout(function() {
-                    closeChatbotHandler();
-                    setTimeout(function() {
+                // Se for agendar, abre o modal
+                if (action === 'agendar') {
+                    setTimeout(() => {
+                        closeChatbotHandler();
                         openModal('agendamentoModal');
-                    }, 300);
-                }, 1000);
+                    }, 1500);
+                }
             }
         }
     });
@@ -392,36 +377,11 @@ function sendUserMessage() {
     // Limpar input
     chatInput.value = '';
     
-    // Resposta inteligente do bot (USANDO A NOVA FUNÇÃO)
+    // Resposta inteligente do bot
     setTimeout(function() {
         const botResponse = getBotResponse(message);
         addBotMessage(botResponse);
     }, 800);
-}
-function configurarOpcoesChatbot() {
-    document.addEventListener('click', function(e) {
-        const chatOption = e.target.closest('.chat-option');
-        if (chatOption) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const optionType = chatOption.getAttribute('data-action') || 
-                              chatOption.getAttribute('data-option');
-            
-            if (optionType) {
-                const resposta = getBotResponseForOption(optionType);
-                addBotMessage(resposta);
-                
-                // Se for agendar, abre o modal
-                if (optionType === 'agendar') {
-                    setTimeout(() => {
-                        closeChatbotHandler();
-                        openModal('agendamentoModal');
-                    }, 1500);
-                }
-            }
-        }
-    });
 }
 
 function addUserMessage(text) {
@@ -467,11 +427,9 @@ function addBotMessage(text) {
     chatbotMessages.appendChild(messageDiv);
     chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
-// NOVA FUNÇÃO: Análise da mensagem do usuário
+
 function getBotResponse(userMessage) {
     const msg = userMessage.toLowerCase().trim();
-    
-    // 🔍 VERIFICAÇÕES POR CATEGORIA
     
     // 1. AGENDAMENTO
     if (msg.includes('agendar') || msg.includes('marcar') || msg.includes('consulta') || msg.includes('marcação')) {
@@ -518,11 +476,11 @@ function getBotResponse(userMessage) {
         return getBotResponseForOption('pontualidade');
     }
     
-    // 🚫 PERGUNTAS TÉCNICAS/DIAGNÓSTICO - REDIRECIONAR
+    // PERGUNTAS TÉCNICAS/DIAGNÓSTICO
     if (
         msg.includes('procedimento') || msg.includes('tratamento') || msg.includes('como funciona') || 
         msg.includes('injeção') || msg.includes('laser') || msg.includes('ácido') || msg.includes('acido') ||
-        msg.includes('preenchimento') || msg.includes('botox') || msg.includes('preenchimento') ||
+        msg.includes('preenchimento') || msg.includes('botox') ||
         msg.includes('mancha') || msg.includes('verruga') || msg.includes('câncer') || msg.includes('cancer') ||
         msg.includes('alergia') || msg.includes('coceira') || msg.includes('dor') || msg.includes('vermelhidão') ||
         msg.includes('diagnóstico') || msg.includes('diagnostico') || msg.includes('doença') || msg.includes('doenca') ||
@@ -531,25 +489,25 @@ function getBotResponse(userMessage) {
         return getBotResponseForOption('tecnica');
     }
     
-    // 🚨 EMERGÊNCIAS
+    // EMERGÊNCIAS
     if (msg.includes('emergência') || msg.includes('emergencia') || msg.includes('urgente') || 
         msg.includes('sangrando') || msg.includes('infecção') || msg.includes('infeccao') || 
         msg.includes('dor forte') || msg.includes('febre alta')) {
         return getBotResponseForOption('emergencia');
     }
     
-    // 🤔 PERGUNTAS GERAIS SOBRE A CLÍNICA
+    // SAUDAÇÕES
     if (msg.includes('oi') || msg.includes('olá') || msg.includes('ola') || msg.includes('bom dia') || 
         msg.includes('boa tarde') || msg.includes('boa noite')) {
         return getBotResponseForOption('saudacao');
     }
     
-    // 📋 OPÇÕES
+    // OPÇÕES
     if (msg.includes('opções') || msg.includes('opcoes') || msg.includes('ajuda') || msg.includes('o que pode fazer')) {
         return getBotResponseForOption('opcoes');
     }
     
-    // 🔍 PADRÃO - Não entendeu
+    // PADRÃO
     return "Desculpe, não entendi sua pergunta. Posso ajudar com:<br>" +
            "• Agendamento de consultas<br>" +
            "• Valores e formas de pagamento<br>" +
@@ -559,7 +517,6 @@ function getBotResponse(userMessage) {
            "Digite 'opções' para ver mais.";
 }
 
-// NOVA FUNÇÃO: Banco de respostas
 function getBotResponseForOption(opcao) {
     const respostas = {
         'saudacao': `👋 Olá! Sou o assistente virtual da DermaCare. Posso ajudar você com:<br>
@@ -722,15 +679,6 @@ function getBotResponseForOption(opcao) {
     };
     
     return respostas[opcao] || respostas['default'];
-}
-
-// NOVA FUNÇÃO: Mensagem inicial do chatbot
-function mostrarMensagemInicial() {
-    if (!chatbotOpen) return;
-    
-    setTimeout(function() {
-        addBotMessage(getBotResponseForOption('saudacao'));
-    }, 1000);
 }
 
 // ============================================
@@ -1104,35 +1052,7 @@ function imprimirComprovante(data) {
 }
 
 // ============================================
-// 6. FUNÇÕES UTILITÁRIAS
-// ============================================
-function formatarTelefone(e) {
-    let value = e.target.value.replace(/\D/g, '');
-    
-    if (value.length > 11) {
-        value = value.slice(0, 11);
-    }
-    
-    if (value.length > 10) {
-        value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-    } else if (value.length > 6) {
-        value = value.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
-    } else if (value.length > 2) {
-        value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
-    } else if (value.length > 0) {
-        value = value.replace(/^(\d*)/, '($1');
-    }
-    
-    e.target.value = value;
-}
-
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-// ============================================
-// 7. CARROSSEL DE DEPOIMENTOS
+// 6. CARROSSEL DE DEPOIMENTOS
 // ============================================
 function initCarrosselDepoimentos() {
     const prevBtn = document.querySelector('.carrossel-btn.prev');
@@ -1209,7 +1129,7 @@ function stopCarrosselAutoRotation() {
 }
 
 // ============================================
-// 8. FORMULÁRIOS GERAIS
+// 7. FORMULÁRIOS GERAIS
 // ============================================
 function initFormularios() {
     // Formulário de contato
@@ -1241,7 +1161,7 @@ function initFormularios() {
 }
 
 // ============================================
-// 9. SCROLL SUAVE
+// 8. SCROLL SUAVE
 // ============================================
 function initScrollSuave() {
     document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
@@ -1275,50 +1195,7 @@ function initScrollSuave() {
 }
 
 // ============================================
-// 10. TESTE DE PELE
-// ============================================
-function initTestePele() {
-    const opcoes = document.querySelectorAll('.opcao');
-    if (opcoes.length === 0) return;
-    
-    opcoes.forEach(function(opcao) {
-        opcao.addEventListener('click', function() {
-            // Remover seleção anterior
-            opcoes.forEach(function(o) {
-                o.classList.remove('selecionada');
-            });
-            
-            // Selecionar esta opção
-            this.classList.add('selecionada');
-            
-            // Mostrar resultado
-            const tipo = this.getAttribute('data-tipo');
-            const resultadoSpan = document.getElementById('tipo-pele');
-            if (resultadoSpan) {
-                const tipos = {
-                    'oleosa': 'Pele Oleosa',
-                    'seca': 'Pele Seca', 
-                    'mista': 'Pele Mista',
-                    'normal': 'Pele Normal',
-                    'sensivel': 'Pele Sensível',
-                    'reativa': 'Pele Reativa'
-                };
-                resultadoSpan.textContent = tipos[tipo] || 'Pele Normal';
-                
-                // Mostrar seção de resultado
-                const resultadoDiv = document.querySelector('.resultado');
-                if (resultadoDiv) {
-                    resultadoDiv.classList.add('mostrar');
-                }
-            }
-        });
-    });
-    
-    console.log('✅ Teste de pele configurado');
-}
-
-// ============================================
-// 11. BOTÃO DE LIGAR (MOBILE)
+// 9. BOTÃO DE LIGAR (MOBILE)
 // ============================================
 function createCallButton() {
     // Verificar se já existe
@@ -1366,32 +1243,35 @@ function createCallButton() {
 }
 
 // ============================================
-// 12. FUNÇÕES DE SUPORTE
+// 10. FUNÇÕES UTILITÁRIAS
 // ============================================
-function initImageOptimization() {
-    // Esta função pode ser usada para lazy loading de imagens
-    // Implementação básica
-    const imagens = document.querySelectorAll('img[data-src]');
-    if (imagens.length > 0 && 'IntersectionObserver' in window) {
-        const imgObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.add('loaded');
-                    imgObserver.unobserve(img);
-                }
-            });
-        });
-        
-        imagens.forEach(function(img) {
-            imgObserver.observe(img);
-        });
+function formatarTelefone(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    
+    if (value.length > 11) {
+        value = value.slice(0, 11);
     }
+    
+    if (value.length > 10) {
+        value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else if (value.length > 6) {
+        value = value.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+    } else if (value.length > 2) {
+        value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+    } else if (value.length > 0) {
+        value = value.replace(/^(\d*)/, '($1');
+    }
+    
+    e.target.value = value;
+}
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
 // ============================================
-// 13. FUNÇÕES EXPORTADAS PARA HTML
+// 11. FUNÇÕES EXPORTADAS PARA HTML
 // ============================================
 // Estas funções são chamadas diretamente do HTML
 window.selecionarHorario = function(horario, elemento) {
@@ -1425,3 +1305,341 @@ console.log('🎉 Sistema DermaCare carregado com sucesso!');
 console.log('📞 Telefone:', CONFIG.clinicInfo.phone);
 console.log('⏰ Horários fixos:', CONFIG.horariosFixos.join(', '));
 console.log('🚀 Pronto para uso!');
+
+// ============================================
+// 10. TESTE DE PELE RESPONSÁVEL - 3 PERGUNTAS
+// ============================================
+function initTestePeleResponsavel() {
+    console.log('🔧 Inicializando teste de pele responsável...');
+    
+    // Estado do teste
+    let respostas = {
+        tipoPele: null,
+        acne: null,
+        reacaoSol: null
+    };
+    
+    let perguntaAtual = 1;
+    const totalPerguntas = 3;
+    
+    // Elementos
+    const btnContinuar = document.getElementById('btnContinuarTeste');
+    const btnVoltar = document.getElementById('btnVoltarTeste');
+    const btnAgendar = document.getElementById('btnAgendarConsulta');
+    const btnRefazer = document.getElementById('btnRefazerTeste');
+    const opcoesBtns = document.querySelectorAll('.opcao-btn');
+    const progressoBar = document.getElementById('progressoBar');
+    const progressoTexto = document.getElementById('progressoTexto');
+    
+    if (!btnContinuar || opcoesBtns.length === 0) {
+        console.error('❌ Elementos do teste não encontrados');
+        return;
+    }
+    
+    console.log('✅ Teste de pele responsável inicializado');
+    
+    // 1. Atualizar progresso
+    function atualizarProgresso() {
+        const progresso = ((perguntaAtual - 1) / totalPerguntas) * 100;
+        progressoBar.style.width = `${progresso}%`;
+        progressoTexto.textContent = `${Math.round(progresso)}%`;
+    }
+    
+    // 2. Configurar seleção de opções
+    opcoesBtns.forEach(botao => {
+        botao.addEventListener('click', function() {
+            // Remover seleção anterior da mesma pergunta
+            const perguntaNum = this.getAttribute('data-pergunta');
+            document.querySelectorAll(`.opcao-btn[data-pergunta="${perguntaNum}"]`).forEach(op => {
+                op.classList.remove('selecionada');
+            });
+            
+            // Selecionar esta opção
+            this.classList.add('selecionada');
+            
+            // Salvar resposta
+            const resposta = this.getAttribute('data-resposta');
+            switch(perguntaNum) {
+                case '1':
+                    respostas.tipoPele = resposta;
+                    console.log('🎯 Tipo de pele:', resposta);
+                    break;
+                case '2':
+                    respostas.acne = resposta;
+                    console.log('🎯 Frequência de acne:', resposta);
+                    break;
+                case '3':
+                    respostas.reacaoSol = resposta;
+                    console.log('🎯 Reação ao sol:', resposta);
+                    break;
+            }
+            
+            // Habilitar botão Continuar
+            btnContinuar.disabled = false;
+            btnContinuar.style.opacity = '1';
+            btnContinuar.style.cursor = 'pointer';
+        });
+    });
+    
+    // 3. Configurar botão Continuar
+    btnContinuar.addEventListener('click', function() {
+        // Validar se selecionou algo na pergunta atual
+        const perguntaAtualElement = document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`);
+        const selecionada = perguntaAtualElement.querySelector('.opcao-btn.selecionada');
+        
+        if (!selecionada) {
+            alert('Por favor, selecione uma opção para continuar.');
+            return;
+        }
+        
+        if (perguntaAtual < totalPerguntas) {
+            // Ir para próxima pergunta
+            document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`).classList.remove('ativa');
+            perguntaAtual++;
+            document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`).classList.add('ativa');
+            
+            // Atualizar progresso
+            atualizarProgresso();
+            
+            // Resetar botão Continuar
+            btnContinuar.disabled = true;
+            btnContinuar.style.opacity = '0.5';
+            
+            // Mostrar botão Voltar
+            btnVoltar.style.display = 'flex';
+            
+            console.log(`➡️ Indo para pergunta ${perguntaAtual}`);
+        } else {
+            // Mostrar resultado
+            mostrarResultado();
+            console.log('📊 Mostrando resultado final');
+        }
+    });
+    
+    // 4. Configurar botão Voltar
+    btnVoltar.addEventListener('click', function() {
+        if (perguntaAtual > 1) {
+            // Voltar para pergunta anterior
+            document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`).classList.remove('ativa');
+            perguntaAtual--;
+            document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`).classList.add('ativa');
+            
+            // Atualizar progresso
+            atualizarProgresso();
+            
+            // Habilitar botão Continuar (já tem resposta)
+            const perguntaElement = document.querySelector(`.pergunta[data-pergunta="${perguntaAtual}"]`);
+            const temSelecao = perguntaElement.querySelector('.opcao-btn.selecionada');
+            btnContinuar.disabled = !temSelecao;
+            btnContinuar.style.opacity = temSelecao ? '1' : '0.5';
+            
+            // Esconder botão Voltar se estiver na primeira
+            if (perguntaAtual === 1) {
+                this.style.display = 'none';
+            }
+            
+            console.log(`⬅️ Voltando para pergunta ${perguntaAtual}`);
+        }
+    });
+    
+    // 5. Configurar botão Agendar Consulta
+    btnAgendar.addEventListener('click', function() {
+        console.log('🎯 Agendar consulta do resultado');
+        closeChatbotHandler();
+        setTimeout(() => openModal('agendamentoModal'), 300);
+    });
+    
+    // 6. Configurar botão Refazer
+    btnRefazer.addEventListener('click', reiniciarTeste);
+    
+    // 7. Função para mostrar resultado
+    function mostrarResultado() {
+        // Esconder perguntas e navegação
+        document.querySelector('.pergunta.ativa').classList.remove('ativa');
+        document.querySelector('.navegacao-teste').style.display = 'none';
+        
+        // Determinar tipo de pele principal
+        const resultado = determinarResultado(respostas);
+        
+        // Atualizar resultado
+        document.getElementById('tipoTitulo').textContent = resultado.titulo;
+        document.getElementById('tipoDescricao').textContent = resultado.descricao;
+        
+        // Atualizar orientações
+        const listaOrientacoes = document.getElementById('orientacoesLista');
+        listaOrientacoes.innerHTML = '';
+        resultado.orientacoes.forEach(orientacao => {
+            const li = document.createElement('li');
+            li.textContent = orientacao;
+            listaOrientacoes.appendChild(li);
+        });
+        
+        // Mostrar resultado
+        document.getElementById('resultadoContainer').style.display = 'block';
+        
+        // Rolar para resultado
+        document.getElementById('resultadoContainer').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+    }
+    
+    // 8. Função para determinar resultado (baseado em dermatologia real)
+    function determinarResultado(dados) {
+        // Dados médicos baseados em dermatologia
+        const tipos = {
+            'oleosa': {
+                titulo: 'Pele Oleosa',
+                descricao: 'Sua pele produz mais sebo que o normal, o que pode levar a poros dilatados, brilho excessivo e maior tendência à acne.',
+                orientacoes: [
+                    'Lave o rosto 2x ao dia com sabonete específico para pele oleosa',
+                    'Use produtos oil-free e não comedogênicos',
+                    'Aplique protetor solar em gel ou sérum diariamente',
+                    'Evite tocar o rosto com as mãos sujas',
+                    'Faça limpeza de pele profissional regularmente'
+                ]
+            },
+            'seca': {
+                titulo: 'Pele Seca',
+                descricao: 'Sua pele produz menos sebo que o necessário, podendo causar sensação de repuxamento, descamação, coceira e maior sensibilidade.',
+                orientacoes: [
+                    'Use hidratantes ricos em ceramidas, ácido hialurônico e glicerina',
+                    'Evite água muito quente no banho (prefira morna)',
+                    'Aplique hidratante logo após o banho, com a pele ainda úmida',
+                    'Use protetor solar com textura cremosa ou loção',
+                    'Considere usar um umidificador no ambiente'
+                ]
+            },
+            'mista': {
+                titulo: 'Pele Mista',
+                descricao: 'Sua pele é oleosa na "zona T" (testa, nariz e queixo) e normal/seca nas bochechas. É o tipo mais comum na população.',
+                orientacoes: [
+                    'Use produtos específicos para pele mista',
+                    'Aplique hidratante mais leve na zona T e mais rico nas bochechas',
+                    'Faça limpezas localizadas na zona oleosa quando necessário',
+                    'Use protetor solar oil-free ou sérum',
+                    'Máscaras diferentes podem ser usadas em áreas diferentes'
+                ]
+            },
+            'normal': {
+                titulo: 'Pele Normal',
+                descricao: 'Sua pele tem um equilíbrio adequado de hidratação e oleosidade, sem grandes problemas ou sensibilidades.',
+                orientacoes: [
+                    'Mantenha rotina básica de limpeza, hidratação e proteção solar',
+                    'Faça limpeza de pele preventiva a cada 3 meses',
+                    'Use antioxidantes como vitamina C para prevenção do envelhecimento',
+                    'Não descuide do protetor solar diário (mesmo em dias nublados)',
+                    'Beba bastante água e mantenha alimentação equilibrada'
+                ]
+            },
+            'sensivel': {
+                titulo: 'Pele Sensível',
+                descricao: 'Sua pele reage facilmente a produtos, mudanças de temperatura e fatores ambientais, com vermelhidão, coceira ou irritação.',
+                orientacoes: [
+                    'Use produtos hipoalergênicos, sem fragrância e sem álcool',
+                    'Faça teste de contato antes de usar novos produtos',
+                    'Evite esfoliantes físicos agressivos (prefira químicos suaves)',
+                    'Use protetor solar mineral (óxido de zinco ou dióxido de titânio)',
+                    'Consulte dermatologista antes de iniciar qualquer tratamento'
+                ]
+            }
+        };
+        
+        // Determinar tipo principal
+        const tipoPrincipal = dados.tipoPele in tipos ? dados.tipoPele : 'normal';
+        const resultado = tipos[tipoPrincipal];
+        
+        // Adicionar orientações específicas baseadas nas outras respostas
+        if (dados.acne === 'frequente') {
+            resultado.orientacoes.push('Evite alimentos muito gordurosos e com alto índice glicêmico');
+            resultado.orientacoes.push('Não esprema as espinhas para evitar cicatrizes');
+        }
+        
+        if (dados.reacaoSol === 'queima') {
+            resultado.orientacoes.push('Use protetor solar FPS 50+ e reaplique a cada 2 horas');
+            resultado.orientacoes.push('Use chapéu e óculos escuros com proteção UV');
+        }
+        
+        return resultado;
+    }
+    
+    // 9. Função para reiniciar teste
+    function reiniciarTeste() {
+        // Resetar variáveis
+        respostas = { tipoPele: null, acne: null, reacaoSol: null };
+        perguntaAtual = 1;
+        
+        // Resetar seleções visuais
+        opcoesBtns.forEach(botao => {
+            botao.classList.remove('selecionada');
+        });
+        
+        // Mostrar pergunta 1
+        document.querySelectorAll('.pergunta').forEach(p => p.classList.remove('ativa'));
+        document.querySelector('.pergunta[data-pergunta="1"]').classList.add('ativa');
+        document.getElementById('resultadoContainer').style.display = 'none';
+        document.querySelector('.navegacao-teste').style.display = 'flex';
+        
+        // Resetar botões
+        btnContinuar.disabled = true;
+        btnContinuar.style.opacity = '0.5';
+        btnVoltar.style.display = 'none';
+        
+        // Resetar progresso
+        atualizarProgresso();
+        
+        // Rolar para o topo do teste
+        document.querySelector('.teste-pele-responsavel').scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' 
+        });
+        
+        console.log('🔄 Teste reiniciado');
+    }
+    
+    // Inicializar estado
+    atualizarProgresso();
+    btnContinuar.disabled = true;
+    btnContinuar.style.opacity = '0.5';
+    btnVoltar.style.display = 'none';
+    
+    console.log('✅ Teste de pele responsável configurado com sucesso!');
+}
+
+// ============================================
+// ATUALIZAR INICIALIZAÇÃO
+// ============================================
+// Atualize sua função DOMContentLoaded para incluir o teste:
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DermaCare - Inicializando sistema...');
+    
+    try {
+        initMenuMobile();
+        initModalAgendamento();
+        initChatbot();
+        initCarrosselDepoimentos();
+        initFormularios();
+        initScrollSuave();
+        initSistemaHorarios();
+        initTestePeleResponsavel(); // ← ADICIONAR ESTA LINHA
+        
+        // Abrir chatbot automático após delay
+        setTimeout(function() {
+            const chatbot = document.querySelector('.chatbot-container');
+            if (chatbot && !chatbotOpen) {
+                chatbot.classList.add('active');
+                chatbotOpen = true;
+                console.log('🤖 Chatbot aberto automaticamente');
+            }
+        }, CONFIG.autoChatbotDelay);
+        
+        // Botão de ligar para mobile
+        if (window.innerWidth <= 768) {
+            createCallButton();
+        }
+        
+        console.log('✅ Sistema inicializado com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro na inicialização:', error);
+    }
+});

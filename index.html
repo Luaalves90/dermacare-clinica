@@ -14,7 +14,7 @@
     <meta property="og:title" content="DermaCare | Clínica Dermatológica">
     <meta property="og:description"
         content="Dermatologia de excelência com tratamentos modernos e tecnologia avançada.">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3">
+    <meta property="og:image" content="img/dermatologista-fundo.jpg">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
@@ -230,9 +230,8 @@
                 </div>
 
                 <!-- Campo oculto para URL do Google Script -->
-                <!-- ⚠️ SUBSTITUA "SUA_URL_AQUI" pela URL do SEU Google Script -->
                 <input type="hidden" id="googleScriptUrl"
-                    value="https://script.google.com/macros/s/AKfycbwIujv6emf2BD9lqlQMJgq42Zidl0DNkjD6C38puvEuadu3hZD28mxZ-4sRnaKrknfG/exec">
+                    value="https://script.google.com/macros/s/AKfycbypdxaHUXlGcY1dzcu1DinBczHDzBcmvekvp2on0w7iX1Om_pC0rkfk4CcLkR5kKtvn/exec">
             </form>
 
             <!-- Mensagem de sucesso -->
@@ -274,6 +273,7 @@
                     <li><a href="#sobre">Sobre</a></li>
                     <li><a href="#servicos">Serviços</a></li>
                     <li><a href="#tecnologias">Tecnologias</a></li>
+                    <li><a href="teste-pele">Teste</a></li>
                     <li><a href="#resultados">Resultados</a></li>
                     <li><a href="#depoimentos">Depoimentos</a></li>
                     <li><a href="#contato">Contato</a></li>
@@ -289,7 +289,7 @@
         <!-- Seção Hero -->
         <section class="hero" id="inicio"
             style="min-height: 100vh; background: linear-gradient(rgba(10, 58, 98, 0.7), rgba(10, 186, 181, 0.4)), url(img/dermatologista-fundo.jpg); background-size: cover; background-position: center; background-repeat: no-repeat; display: flex; align-items: center; position: relative;">
-            <div class="hero-overlay"></div>
+            <div class="hero-overlay"></div>jpg
             <div class="container">
                 <div class="hero-content">
                     <h2>Dra. Mariana Santos</h2>
@@ -320,11 +320,12 @@
             <div class="container">
                 <h2 class="section-title">Sobre a Dra. Mariana Santos</h2>
                 <div class="sobre-content">
-                    <div class="sobre-img">
+                    <div class="foto-perfil">
+                        
                         <div class="img-container">
-                            <!-- Imagem placeholder - substituir por imagem real -->
                             <div class="placeholder-img">
-                                <i class="fas fa-user-md"></i>
+                                <img src="img/dermato.jpg" alt="Dra. Mariana Santos" class="foto-perfil">
+                                
                             </div>
                         </div>
                     </div>
@@ -532,35 +533,181 @@
                 </div>
             </div>
         </section>
+        <!-- Seção Teste de Pele Responsável -->
+<section class="teste-pele-responsavel" id="teste-pele">
+    <div class="container">
+        <div class="teste-header">
+            <h2 class="section-title">Triagem Inicial do Tipo de Pele</h2>
+            <p class="section-subtitle">Responda 3 perguntas rápidas para uma orientação inicial</p>
+            
+            <!-- AVISO IMPORTANTE -->
+            <div class="aviso-medico">
+                <div class="aviso-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="aviso-content">
+                    <h3><i class="fas fa-exclamation-triangle"></i> AVISO IMPORTANTE</h3>
+                    <p><strong>Este teste é apenas uma triagem inicial educativa.</strong> Não substitui uma consulta médica presencial com a dermatologista.</p>
+                    <p>Para diagnóstico preciso, avaliação completa e plano de tratamento personalizado, <strong>agende uma consulta</strong> com a Dra. Mariana Santos.</p>
+                </div>
+            </div>
+        </div>
 
-        <!-- Seção Teste de Pele-->
-        <section class="teste-pele">
-            <div class="container">
-                <h2 class="section-title">Descubra Seu Tipo de Pele</h2>
-                <p class="section-subtitle">Responda 2 perguntas rápidas para identificar seu tipo de pele</p>
+        <div class="teste-container">
+            <!-- Pergunta 1 -->
+            <div class="pergunta ativa" id="pergunta1" data-pergunta="1">
+                <div class="pergunta-header">
+                    <span class="pergunta-numero">Pergunta 1 de 3</span>
+                    <h3>Como sua pele se sente algumas horas após lavar o rosto?</h3>
+                </div>
+                <div class="opcoes-grid">
+                    <button class="opcao-btn" data-resposta="oleosa" data-pergunta="1">
+                        <i class="fas fa-tint"></i>
+                        <span>Brilhosa e oleosa em toda a face</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="seca" data-pergunta="1">
+                        <i class="fas fa-wind"></i>
+                        <span>Apertada, repuxando, às vezes descama</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="mista" data-pergunta="1">
+                        <i class="fas fa-adjust"></i>
+                        <span>Oleosa na "zona T", normal/seca nas bochechas</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="normal" data-pergunta="1">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>Confortável, sem brilho excessivo nem repuxamento</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="sensivel" data-pergunta="1">
+                        <i class="fas fa-allergies"></i>
+                        <span>Sensível, com vermelhidão ou irritação fácil</span>
+                    </button>
+                </div>
+            </div>
 
-                <div class="teste-container">
-                    <!-- Área da pergunta -->
-                    <div class="pergunta">
-                        <h3>Como sua pele se sente algumas horas após lavar?</h3>
-                        <button class="opcao" data-tipo="oleosa">Brilhosa/oleosa</button>
-                        <button class="opcao" data-tipo="seca">Apertada/seca</button>
-                        <button class="opcao" data-tipo="mista">Brilhosa na "zona T", normal/seca nas bochechas</button>
-                        <button class="opcao" data-tipo="normal">Confortável/equilibrada</button>
+            <!-- Pergunta 2 -->
+            <div class="pergunta" id="pergunta2" data-pergunta="2">
+                <div class="pergunta-header">
+                    <span class="pergunta-numero">Pergunta 2 de 3</span>
+                    <h3>Com que frequência você tem espinhas?</h3>
+                </div>
+                <div class="opcoes-grid">
+                    <button class="opcao-btn" data-resposta="frequente" data-pergunta="2">
+                        <i class="fas fa-dot-circle"></i>
+                        <span>Frequentemente, várias por semana</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="ocasional" data-pergunta="2">
+                        <i class="fas fa-circle"></i>
+                        <span>Ocasionalmente, 1-2 por mês</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="raro" data-pergunta="2">
+                        <i class="far fa-circle"></i>
+                        <span>Raramente, quase nunca</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="ciclico" data-pergunta="2">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Principalmente no período menstrual</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pergunta 3 -->
+            <div class="pergunta" id="pergunta3" data-pergunta="3">
+                <div class="pergunta-header">
+                    <span class="pergunta-numero">Pergunta 3 de 3</span>
+                    <h3>Como sua pele reage ao sol e produtos novos?</h3>
+                </div>
+                <div class="opcoes-grid">
+                    <button class="opcao-btn" data-resposta="queima" data-pergunta="3">
+                        <i class="fas fa-sun"></i>
+                        <span>Queima fácil, bronzeia pouco</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="bronzeia" data-pergunta="3">
+                        <i class="fas fa-umbrella-beach"></i>
+                        <span>Bronzeia fácil, raramente queima</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="sensivel-produtos" data-pergunta="3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Fica irritada com muitos produtos</span>
+                    </button>
+                    <button class="opcao-btn" data-resposta="resistente" data-pergunta="3">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Resistente, tolera bem produtos</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navegação -->
+            <div class="navegacao-teste">
+                <button class="btn-voltar" id="btnVoltarTeste">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+                <div class="progresso-container">
+                    <div class="progresso-bar">
+                        <div class="progresso" id="progressoBar"></div>
                     </div>
+                    <span class="progresso-texto" id="progressoTexto">0%</span>
+                </div>
+                <button class="btn-continuar" id="btnContinuarTeste">
+                    Continuar <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
 
-                    <!-- Resultado -->
-                    <div class="resultado">
-                        <h3>Identificamos que você tem:</h3>
-                        <span id="tipo-pele">--</span>
-                        <p>Para receber recomendações personalizadas de cuidados com a pele, agende uma consulta com
-                            nossa dermatologista.</p>
-                        <p class="aviso">⚠️ Este teste é apenas uma triagem inicial. Para diagnóstico preciso e plano de
-                            tratamento personalizado, consulte um dermatologista.</p>
+            <!-- Resultado -->
+            <div class="resultado-container" id="resultadoContainer">
+                <div class="resultado-header">
+                    <h3><i class="fas fa-clipboard-check"></i> Resultado da Triagem</h3>
+                    <p class="resultado-subtitle">Com base nas suas respostas:</p>
+                </div>
+                
+                <div class="resultado-content">
+                    <div class="tipo-resultado">
+                        <span class="tipo-titulo" id="tipoTitulo">--</span>
+                        <p class="tipo-descricao" id="tipoDescricao">
+                            <!-- Descrição será preenchida por JavaScript -->
+                        </p>
+                    </div>
+                    
+                    <div class="orientacoes">
+                        <h4><i class="fas fa-lightbulb"></i> Orientações Gerais:</h4>
+                        <ul id="orientacoesLista">
+                            <!-- Lista será preenchida por JavaScript -->
+                        </ul>
+                    </div>
+                    
+                    <!-- AVISO CONSULTA -->
+                    <div class="consulta-aviso">
+                        <div class="consulta-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="consulta-content">
+                            <h4>⚠️ Este NÃO É um diagnóstico médico</h4>
+                            <p><strong>Este teste é uma triagem educativa.</strong> Cada pele é única e requer avaliação individualizada.</p>
+                            <p><strong>Apenas uma consulta presencial</strong> com a dermatologista pode fornecer:</p>
+                            <ul>
+                                <li>Diagnóstico preciso da sua pele</li>
+                                <li>Avaliação com dermatoscopia (lupa especializada)</li>
+                                <li>Plano de tratamento personalizado</li>
+                                <li>Prescrição de medicamentos seguros e eficazes</li>
+                                <li>Acompanhamento profissional</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Botões de Ação -->
+                    <div class="acao-botoes">
+                        <button class="btn-agendar-consulta" id="btnAgendarConsulta">
+                            <i class="fas fa-calendar-check"></i> Agendar Consulta com a Dermatologista
+                        </button>
+                        <button class="btn-refazer-teste" id="btnRefazerTeste">
+                            <i class="fas fa-redo"></i> Refazer Triagem
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+</section>
+
         <!-- Seção Galeria -->
         <section class="galeria" id="resultados">
             <div class="container">
@@ -574,7 +721,7 @@
                     <div class="galeria-item">
                         <div class="galeria-imagens">
                             <div class="galeria-img antes">
-                                <img src="img/resultados/acne-antes.jpg"
+                                <img src="img/acne-antes.jpg"
                                     alt="Paciente com acne severa antes do tratamento" class="galeria-imagem-real">
                                 <div class="img-badge">ANTES</div>
                                 <div class="img-overlay">
@@ -582,7 +729,7 @@
                                 </div>
                             </div>
                             <div class="galeria-img depois">
-                                <img src="img/resultados/acne-depois.jpg"
+                                <img src="img/acne-depois.jpg"
                                     alt="Paciente com pele limpa após tratamento de acne" class="galeria-imagem-real">
                                 <div class="img-badge">DEPOIS</div>
                                 <div class="img-overlay">
@@ -608,7 +755,7 @@
                     <div class="galeria-item">
                         <div class="galeria-imagens">
                             <div class="galeria-img antes">
-                                <img src="img/resultados/rejuvenescimento-antes.jpg"
+                                <img src="img/flacidez-antes.jpg"
                                     alt="Paciente com flacidez facial antes do tratamento" class="galeria-imagem-real">
                                 <div class="img-badge">ANTES</div>
                                 <div class="img-overlay">
@@ -616,7 +763,7 @@
                                 </div>
                             </div>
                             <div class="galeria-img depois">
-                                <img src="img/resultados/rejuvenescimento-depois.jpg"
+                                <img src="img/flacidez-depois.jpg"
                                     alt="Paciente com pele rejuvenescida após tratamento" class="galeria-imagem-real">
                                 <div class="img-badge">DEPOIS</div>
                                 <div class="img-overlay">
@@ -642,7 +789,7 @@
                     <div class="galeria-item">
                         <div class="galeria-imagens">
                             <div class="galeria-img antes">
-                                <img src="img/resultados/melasma-antes.jpg"
+                                <img src="img/melasma-antes.jpg"
                                     alt="Paciente com melasma antes do tratamento" class="galeria-imagem-real">
                                 <div class="img-badge">ANTES</div>
                                 <div class="img-overlay">
@@ -650,7 +797,7 @@
                                 </div>
                             </div>
                             <div class="galeria-img depois">
-                                <img src="img/resultados/melasma-depois.jpg"
+                                <img src="img/melasma-depois.jpg"
                                     alt="Paciente com manchas clareadas após tratamento" class="galeria-imagem-real">
                                 <div class="img-badge">DEPOIS</div>
                                 <div class="img-overlay">
@@ -926,10 +1073,6 @@
     </main>
 
     <!-- Footer -->
-    <div class="footer-legal">
-        <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>
-        <a href="termos-uso.html" target="_blank">Termos de Uso</a>
-    </div>
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -955,6 +1098,7 @@
                         <li><a href="#servicos">Serviços</a></li>
                         <li><a href="#tecnologias">Tecnologias</a></li>
                         <li><a href="#resultados">Resultados</a></li>
+                        <li><a href="#depoimentos">Depoimentos</a></li>
                         <li><a href="#contato">Contato</a></li>
                     </ul>
                 </div>
