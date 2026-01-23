@@ -2310,4 +2310,417 @@ html body .hero {
     .form-disclaimer {
         font-size: 0.8rem;
     }
+}/* ===== HORÁRIOS DISPONÍVEIS ===== */
+.horarios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f8fafc;
+    border-radius: 10px;
+    border: 2px solid #e2e8f0;
+    min-height: 120px;
+}
+
+.horario-btn {
+    padding: 12px 8px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    color: #333;
+    position: relative;
+    overflow: hidden;
+}
+
+.horario-btn:hover:not(.indisponivel, .selecionado, .almoço) {
+    background: #e6f7f6;
+    border-color: #0ABAB5;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(10, 186, 181, 0.2);
+}
+
+.horario-btn.disponivel {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-color: #28a745;
+    color: #155724;
+    font-weight: 700;
+}
+
+.horario-btn.disponivel::after {
+    content: '✓';
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.8rem;
+    color: #28a745;
+}
+
+.horario-btn.indisponivel {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border-color: #dc3545;
+    color: #721c24;
+    cursor: not-allowed;
+    opacity: 0.7;
+    position: relative;
+}
+
+.horario-btn.indisponivel::after {
+    content: '✗';
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.8rem;
+    color: #dc3545;
+}
+
+.horario-btn.selecionado {
+    background: linear-gradient(135deg, #0a3d62, #0ABAB5);
+    border-color: #0a3d62;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(10, 186, 181, 0.3);
+    font-weight: 700;
+}
+
+.horario-btn.selecionado::after {
+    content: '✓';
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.9rem;
+    color: white;
+    font-weight: bold;
+}
+
+.horario-btn.almoço {
+    background: linear-gradient(135deg, #ffecb3, #ffd54f);
+    border-color: #ffb300;
+    color: #5d4037;
+    cursor: not-allowed;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.horario-btn.almoço::after {
+    content: '🍽️';
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.8rem;
+}
+
+.loading-horarios {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px 20px;
+    color: #666;
+    font-style: italic;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.loading-horarios i {
+    color: #0ABAB5;
+    font-size: 1.5rem;
+}
+
+.no-horarios {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 30px 20px;
+    color: #dc3545;
+    font-weight: 500;
+    background: #f8d7da;
+    border-radius: 8px;
+    border: 2px solid #f5c6cb;
+}
+
+/* Info sobre o agendamento */
+.agendamento-info {
+    background: linear-gradient(135deg, #e6f7f6, #f0f9ff);
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid #0ABAB5;
+    margin-top: 25px;
+    text-align: left;
+}
+
+.agendamento-info p {
+    margin-bottom: 10px;
+    color: #0a3d62;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.agendamento-info p:last-child {
+    margin-bottom: 0;
+}
+
+.agendamento-info i {
+    color: #0ABAB5;
+    min-width: 20px;
+}
+
+.agendamento-info strong {
+    color: #0a3d62;
+    font-weight: 600;
+}
+
+/* Botão no footer */
+.btn-agendamento-footer {
+    width: 100%;
+    margin-top: 15px;
+    background: linear-gradient(135deg, #0ABAB5, #0a8c88);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-agendamento-footer:hover {
+    background: linear-gradient(135deg, #0a8c88, #0ABAB5);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(10, 186, 181, 0.3);
+}
+
+/* Horários no hero */
+.hero-horarios {
+    margin-top: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-horarios p {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.hero-horarios p:last-child {
+    margin-bottom: 0;
+}
+
+.hero-horarios i {
+    color: #0ABAB5;
+    font-size: 1.1rem;
+}
+
+.hero-horarios strong {
+    font-weight: 600;
+    color: white;
+}
+
+/* Ações do sucesso */
+.success-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.success-actions .btn-primary,
+.success-actions .btn-secondary {
+    min-width: 160px;
+}
+
+/* Status do horário */
+.horario-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-indicator.disponivel {
+    background-color: #28a745;
+}
+
+.status-indicator.indisponivel {
+    background-color: #dc3545;
+}
+
+.status-indicator.selecionado {
+    background-color: #0a3d62;
+}
+
+.status-indicator.almoço {
+    background-color: #ffb300;
+}
+
+/* Responsividade dos horários */
+@media (max-width: 768px) {
+    .horarios-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+        padding: 12px;
+    }
+    
+    .horario-btn {
+        padding: 10px 5px;
+        font-size: 0.9rem;
+    }
+    
+    .agendamento-info {
+        padding: 15px;
+    }
+    
+    .agendamento-info p {
+        font-size: 0.9rem;
+    }
+    
+    .success-actions {
+        flex-direction: column;
+    }
+    
+    .success-actions .btn-primary,
+    .success-actions .btn-secondary {
+        width: 100%;
+    }
+    
+    .hero-horarios {
+        padding: 15px;
+        margin-top: 30px;
+    }
+    
+    .hero-horarios p {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .horarios-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .horario-btn {
+        padding: 12px 5px;
+        font-size: 0.85rem;
+    }
+    
+    .horario-status {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .status-item {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* Animações para os horários */
+@keyframes pulseAvailable {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.horario-btn.disponivel:hover:not(.selecionado) {
+    animation: pulseAvailable 2s infinite;
+}
+
+@keyframes fadeInHorario {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.horario-btn {
+    animation: fadeInHorario 0.3s ease-out;
+}
+
+/* Tooltip para horários ocupados */
+.horario-btn.indisponivel:hover::before {
+    content: 'Horário já agendado';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+.horario-btn.indisponivel:hover::after {
+    content: '▼';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #333;
+    font-size: 0.8rem;
+    margin-bottom: -2px;
+}
+
+/* Aviso de data passada */
+.horario-btn.passado {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+    border-color: #adb5bd;
+    color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+.horario-btn.passado::after {
+    content: '⏳';
+    position: absolute;
+    top: 2px;
+    right: 5px;
+    font-size: 0.8rem;
+    color: #6c757d;
 }

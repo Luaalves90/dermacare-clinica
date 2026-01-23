@@ -35,7 +35,7 @@
         "addressCountry": "BR"
       },
       "telephone": "(11) 99999-9999",
-      "openingHours": "Mo-Fr 08:00-19:00, Sa 08:00-14:00"
+      "openingHours": "Mo-Fr 09:00-18:00, Sa 09:00-13:00"
     }
     </script>
     
@@ -95,7 +95,7 @@
     <div class="modal-content">
         <span class="close-modal">&times;</span>
         <h2><i class="fas fa-calendar-check"></i> Agendar Consulta</h2>
-        <p class="modal-subtitle">Preencha os dados e nossa equipe entrará em contato para confirmação</p>
+        <p class="modal-subtitle">Selecione a data e horário disponível para sua consulta</p>
         
         <form id="agendamentoForm">
             <!-- Dados Pessoais -->
@@ -116,46 +116,46 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" placeholder="seu@email.com">
-                        <small class="form-hint">Para confirmação</small>
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                        <small class="form-hint">Para confirmação do agendamento</small>
                     </div>
                 </div>
             </div>
             
-            <!-- Preferências da Consulta -->
+            <!-- Data e Horário -->
             <div class="form-section">
-                <h3><i class="fas fa-calendar-alt"></i> Preferências</h3>
+                <h3><i class="fas fa-calendar-alt"></i> Data e Horário</h3>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="data">Data Preferencial</label>
-                        <input type="date" id="data" min="<?php echo date('Y-m-d'); ?>">
-                        <small class="form-hint">Data desejada</small>
+                        <label for="data-escolhida">Data da Consulta *</label>
+                        <input type="date" id="data-escolhida" required min="<?php echo date('Y-m-d'); ?>">
+                        <small class="form-hint">Selecione uma data</small>
                     </div>
                     
                     <div class="form-group">
-                        <label for="horario">Horário Preferencial</label>
-                        <select id="horario">
-                            <option value="">Selecione</option>
-                            <option value="manha">Manhã (8h-12h)</option>
-                            <option value="tarde">Tarde (14h-18h)</option>
-                            <option value="qualquer">Qualquer horário</option>
-                        </select>
-                        <small class="form-hint">Período desejado</small>
+                        <label for="horario-escolhido">Horário da Consulta *</label>
+                        <div id="horarios-disponiveis" class="horarios-grid">
+                            <div class="loading-horarios">
+                                <i class="fas fa-spinner fa-spin"></i> Selecione uma data primeiro
+                            </div>
+                        </div>
+                        <small class="form-hint">Horários disponíveis para a data selecionada</small>
+                        <input type="hidden" id="horario-escolhido" required>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="tipo-consulta">Tipo de Consulta</label>
-                    <select id="tipo-consulta">
-                        <option value="">Selecione</option>
+                    <label for="tipo-consulta">Tipo de Consulta *</label>
+                    <select id="tipo-consulta" required>
+                        <option value="">Selecione o tipo de consulta</option>
                         <option value="primeira">Primeira Consulta</option>
                         <option value="retorno">Retorno/Follow-up</option>
                         <option value="estetica">Procedimento Estético</option>
                         <option value="cirurgia">Avaliação Cirúrgica</option>
                         <option value="exame">Exame/Procedimento</option>
-                        <option value="emergencia">Casos Urgentes</option>
+                        <option value="urgente">Consulta Urgente</option>
                     </select>
                     <small class="form-hint">Para melhor atendimento</small>
                 </div>
@@ -171,12 +171,12 @@
                         <option value="nao">Não, obrigado</option>
                         <option value="sim">Sim, por favor</option>
                     </select>
-                    <small class="form-hint">Lembramos 24h antes</small>
+                    <small class="form-hint">Lembramos 24h antes da consulta</small>
                 </div>
                 
                 <div class="form-group">
                     <label for="mensagem">Mensagem/Observações (opcional)</label>
-                    <textarea id="mensagem" rows="4" placeholder="Descreva brevemente o motivo da consulta, sintomas, tratamentos anteriores, alergias..."></textarea>
+                    <textarea id="mensagem" rows="4" placeholder="Descreva brevemente o motivo da consulta, sintomas, tratamentos anteriores, alergias conhecidas..."></textarea>
                     <small class="form-hint">Quanto mais informações, melhor o atendimento</small>
                 </div>
             </div>
@@ -193,27 +193,29 @@
                 <div class="form-group checkbox">
                     <input type="checkbox" id="confirmacao" required>
                     <label for="confirmacao">
-                        Confirmo que serei contactado(a) para confirmação do agendamento *
+                        Confirmo que entendi que este horário será reservado exclusivamente para mim *
                     </label>
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-paper-plane"></i> Solicitar Agendamento
+                    <button type="submit" class="btn-primary" id="btn-agendar">
+                        <i class="fas fa-calendar-plus"></i> Confirmar Agendamento
                     </button>
                     
-                    <p class="form-disclaimer">
-                        <i class="fas fa-info-circle"></i> Entraremos em contato em até 24h úteis.
-                    </p>
+                    <div class="agendamento-info">
+                        <p><i class="fas fa-clock"></i> <strong>Duração da consulta:</strong> 60 minutos</p>
+                        <p><i class="fas fa-utensils"></i> <strong>Horário de almoço:</strong> 12:00 às 14:00 (não disponível)</p>
+                        <p><i class="fas fa-info-circle"></i> Este horário será bloqueado automaticamente após sua confirmação</p>
+                    </div>
                 </div>
             </div>
             
             <!-- Campo oculto para URL do Google Script -->
             <!-- ⚠️ SUBSTITUA "SUA_URL_AQUI" pela URL do SEU Google Script -->
-            <input type="hidden" id="googleScriptUrl" value="https://script.google.com/macros/s/AKfycbzKa1k1BbCTS9bY_Pxe0VOmUgw8sytxKS-WII-lcK2XZdR7XcNxRpgidB1SLGZBCDHL/exec">
+            <input type="hidden" id="googleScriptUrl" value="https://script.google.com/macros/s/AKfycbwIujv6emf2BD9lqlQMJgq42Zidl0DNkjD6C38puvEuadu3hZD28mxZ-4sRnaKrknfG/exec">
         </form>
         
-        <!-- Mensagem de sucesso (será mostrada via JavaScript) -->
+        <!-- Mensagem de sucesso -->
         <div id="successMessage" class="success-message" style="display: none;">
             <div class="success-checkmark">
                 <div class="check-icon">
@@ -223,13 +225,19 @@
                     <div class="icon-fix"></div>
                 </div>
             </div>
-            <h3>✅ Agendamento Solicitado!</h3>
-            <p>Recebemos sua solicitação. Em breve entraremos em contato para confirmação.</p>
-            <p>Verifique seu e-mail (inclua a caixa de spam).</p>
-            <button class="btn-secondary" onclick="closeModal()">Fechar</button>
+            <h3>✅ Agendamento Confirmado!</h3>
+            <p id="successDetails">Seu agendamento foi registrado com sucesso.</p>
+            <p><strong>Importante:</strong> Você receberá um e-mail de confirmação em breve.</p>
+            <div class="success-actions">
+                <button class="btn-primary" onclick="closeModal()">Fechar</button>
+                <button class="btn-secondary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Imprimir Comprovante
+                </button>
+            </div>
         </div>
     </div>
 </div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
@@ -250,7 +258,9 @@
                     <li><a href="#depoimentos">Depoimentos</a></li>
                     <li><a href="#contato">Contato</a></li>
                 </ul>
-                <button class="btn-agendar" id="openAgendamento">Agendar Consulta</button>
+                <button class="btn-agendar" id="openAgendamento">
+                    <i class="fas fa-calendar-alt"></i> Agendar Consulta
+                </button>
             </nav>
         </div>
     </header>
@@ -266,8 +276,16 @@
             <h1>Cuidando da sua pele com <span class="highlight">excelência</span> e <span class="highlight">tecnologia</span></h1>
             <p class="slogan">Mais de 15 anos de experiência em dermatologia clínica, cirúrgica e estética</p>
             <div class="hero-buttons">
-                <button class="btn-primary" id="openAgendamento2">Agendar Consulta</button>
-                <a href="#sobre" class="btn-secondary">Conheça a Especialista</a>
+                <button class="btn-primary" id="openAgendamento2">
+                    <i class="fas fa-calendar-alt"></i> Agendar Consulta
+                </button>
+                <a href="#sobre" class="btn-secondary">
+                    <i class="fas fa-user-md"></i> Conheça a Especialista
+                </a>
+            </div>
+            <div class="hero-horarios">
+                <p><i class="fas fa-clock"></i> <strong>Horários de atendimento:</strong> Seg-Sex: 9h-18h | Sáb: 9h-13h</p>
+                <p><i class="fas fa-calendar"></i> <strong>Agendamento online:</strong> Horários em tempo real</p>
             </div>
         </div>
     </div>
@@ -355,7 +373,7 @@
                             <li>Dermatoscopia digital (mapa corporal)</li>
                             <li>Controle de acne, rosácea, psoríase</li>
                         </ul>
-                        <p class="duracao"><i class="far fa-clock"></i> 30-60 min</p>
+                        <p class="duracao"><i class="far fa-clock"></i> 60 minutos</p>
                     </div>
                     
                     <!-- Serviço 2 -->
@@ -370,7 +388,7 @@
                             <li>Bioestimuladores de colágeno</li>
                             <li>Fios de PDO e rejuvenescimento</li>
                         </ul>
-                        <p class="duracao"><i class="far fa-clock"></i> 15-60 min</p>
+                        <p class="duracao"><i class="far fa-clock"></i> 30-60 min</p>
                     </div>
                     
                     <!-- Serviço 3 -->
@@ -630,7 +648,7 @@
                                 </div>
                                 <span class="depoimento-data">Há 1 mês</span>
                             </div>
-                            <p class="depoimento-texto">"Fui diagnosticada com melanoma em fase inicial através do mapeamento de pintas. O atendimento da Dra. Mariana foi impecável, desde o diagnóstico até a cirurgia. Hoje estou curada e eternamente grata!"</p>
+                            <p class="depoimento-texto">"O sistema de agendamento online é muito prático! Consegui marcar minha consulta no horário exato que precisava, sem conflitos. A Dra. Mariana é excelente!"</p>
                             <div class="depoimento-autor">
                                 <p><strong>Ana C.</strong>, 42 anos</p>
                             </div>
@@ -648,7 +666,7 @@
                                 </div>
                                 <span class="depoimento-data">Há 2 meses</span>
                             </div>
-                            <p class="depoimento-texto">"Sofria com acne há anos e já tinha perdido as esperanças. Com o tratamento correto e acompanhamento da Dra. Mariana, minha pele mudou completamente. A autoestima voltou!"</p>
+                            <p class="depoimento-texto">"Adorei poder escolher o horário disponível em tempo real. O sistema me mostrou exatamente quais horários estavam livres. Muito eficiente!"</p>
                             <div class="depoimento-autor">
                                 <p><strong>Carlos R.</strong>, 28 anos</p>
                             </div>
@@ -666,7 +684,7 @@
                                 </div>
                                 <span class="depoimento-data">Há 3 meses</span>
                             </div>
-                            <p class="depoimento-texto">"Fiz o tratamento de rejuvenescimento facial com laser e o resultado foi além do esperado. A Dra. Mariana é muito atenciosa e explica tudo com detalhes. Recomendo a todos!"</p>
+                            <p class="depoimento-texto">"O agendamento online evitou que eu marcasse em um horário já ocupado. Recebi a confirmação por e-mail imediatamente. Prático e seguro!"</p>
                             <div class="depoimento-autor">
                                 <p><strong>Beatriz S.</strong>, 55 anos</p>
                             </div>
@@ -698,8 +716,8 @@
                             <i class="fas fa-sun"></i>
                         </div>
                         <div class="blog-content">
-                            <h3>Proteção Solar: Mitos e Verdades</h3>
-                            <p>Saiba como se proteger corretamente do sol e evitar o envelhecimento precoce e câncer de pele.</p>
+                            <h3>Como Funciona o Sistema de Agendamento Online</h3>
+                            <p>Entenda como nosso sistema em tempo real evita conflitos de horários e garante sua vaga na consulta.</p>
                             <a href="#" class="blog-link">Leia mais</a>
                         </div>
                     </article>
@@ -709,19 +727,19 @@
                             <i class="fas fa-spa"></i>
                         </div>
                         <div class="blog-content">
-                            <h3>Rotina de Skincare para Cada Tipo de Pele</h3>
-                            <p>Descubra os produtos essenciais para uma rotina de cuidados eficaz de acordo com seu tipo de pele.</p>
+                            <h3>Horários Fixos: Por Que São Melhores?</h3>
+                            <p>Saiba como os horários fixos otimizam o atendimento e garantem melhor experiência para os pacientes.</p>
                             <a href="#" class="blog-link">Leia mais</a>
                         </div>
                     </article>
                     
                     <article class="blog-card">
                         <div class="blog-img">
-                            <i class="fas fa-exclamation-triangle"></i>
+                            <i class="fas fa-calendar-alt"></i>
                         </div>
                         <div class="blog-content">
-                            <h3>Sinais de Alerta do Câncer de Pele</h3>
-                            <p>Aprenda a identificar os sinais que merecem atenção e quando procurar um dermatologista.</p>
+                            <h3>Planejando Sua Consulta</h3>
+                            <p>Dicas para escolher o melhor horário e se preparar para sua consulta dermatológica.</p>
                             <a href="#" class="blog-link">Leia mais</a>
                         </div>
                     </article>
@@ -776,10 +794,11 @@
                                 <i class="far fa-clock"></i>
                             </div>
                             <div class="info-content">
-                                <h3>Horário de Funcionamento</h3>
-                                <p>Segunda a Sexta: 8h às 19h</p>
-                                <p>Sábado: 8h às 14h</p>
-                                <p>Domingo: Fechado</p>
+                                <h3>Horário de Atendimento</h3>
+                                <p><strong>Segunda a Sexta:</strong> 9h às 18h</p>
+                                <p><strong>Sábado:</strong> 9h às 13h</p>
+                                <p><strong>Domingo:</strong> Fechado</p>
+                                <p><strong>Almoço:</strong> 12h às 14h (não disponível)</p>
                             </div>
                         </div>
                         
@@ -883,28 +902,24 @@
                 </div>
                 
                 <div class="footer-col">
-                    <h3>Serviços</h3>
+                    <h3>Horários de Atendimento</h3>
                     <ul class="footer-links">
-                        <li><a href="#servicos">Dermatologia Clínica</a></li>
-                        <li><a href="#servicos">Dermatologia Estética</a></li>
-                        <li><a href="#servicos">Cirurgia Dermatológica</a></li>
-                        <li><a href="#servicos">Oncodermatologia</a></li>
-                        <li><a href="#servicos">Tricologia</a></li>
-                        <li><a href="#servicos">Estética Avançada</a></li>
+                        <li><strong>Segunda a Sexta:</strong> 9h às 18h</li>
+                        <li><strong>Sábado:</strong> 9h às 13h</li>
+                        <li><strong>Almoço:</strong> 12h às 14h</li>
+                        <li><strong>Consultas:</strong> 60 minutos</li>
+                        <li><strong>Agendamento:</strong> Online 24h</li>
                     </ul>
                 </div>
                 
                 <div class="footer-col">
-                    <h3>Newsletter</h3>
-                    <p>Receba dicas de cuidados com a pele e novidades da clínica.</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Seu melhor e-mail" aria-label="Insira seu e-mail para newsletter">
-                        <button type="submit" aria-label="Inscrever-se na newsletter">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
+                    <h3>Sistema de Agendamento</h3>
+                    <p>Agende sua consulta online com horários em tempo real. Evite conflitos e garanta seu horário preferencial.</p>
+                    <button class="btn-agendamento-footer" id="openAgendamento3">
+                        <i class="fas fa-calendar-alt"></i> Agendar Agora
+                    </button>
                     <div class="footer-aviso">
-                        <p><i class="fas fa-exclamation-triangle"></i> As informações contidas neste site têm caráter informativo e não substituem a consulta médica.</p>
+                        <p><i class="fas fa-exclamation-triangle"></i> Os horários são atualizados em tempo real. Ao agendar, o horário é bloqueado automaticamente.</p>
                     </div>
                 </div>
             </div>
@@ -915,6 +930,7 @@
                     <div class="footer-legal">
                         <a href="#">Política de Privacidade</a>
                         <a href="#">Termos de Uso</a>
+                        <a href="#">Política de Agendamento</a>
                     </div>
                 </div>
             </div>
