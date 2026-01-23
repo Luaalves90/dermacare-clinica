@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Agendamento - DermaCare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+
+    <style>
+        /* Estilos específicos para política de agendamento */
+        .politica-container {
+            max-width: 900px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .politica-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #0ABAB5;
+        }
+
+        .politica-header h1 {
+            color: #0a3d62;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .politica-header .data-efeito {
+            color: #666;
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+
+        .politica-header .versao {
+            background: #0ABAB5;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .politica-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .politica-section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .politica-section:last-child {
+            border-bottom: none;
+        }
+
+        .politica-section h2 {
+            color: #0a3d62;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .politica-section h3 {
+            color: #0ABAB5;
+            font-size: 1.2rem;
+            margin: 25px 0 15px;
+            padding-left: 20px;
+            border-left: 4px solid #0ABAB5;
+        }
+
+        .politica-section p {
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .politica-section ul,
+        .politica-section ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .politica-section li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            padding-left: 5px;
+            position: relative;
+        }
+
+        .politica-section li strong {
+            color: #0a3d62;
+        }
+
+        .info-box {
+            background: #f0f9ff;
+            border: 1px solid #0ABAB5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 6px solid #0ABAB5;
+        }
+
+        .info-box h4 {
+            color: #0a3d62;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .alerta-box {
+            background: #fff3e0;
+            border: 2px solid #FF9800;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 6px solid #FF9800;
+        }
+
+        .alerta-box h4 {
+            color: #5d4037;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .confirmacao-box {
+            background: #e8f5e9;
+            border: 2px solid #4CAF50;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border-left: 6px solid #4CAF50;
+        }
+
+        .confirmacao-box h4 {
+            color: #1b5e20;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .numero-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #0ABAB5;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background: #0a3d62;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .badge-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .badge-warning {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .contato-rapido {
+            background: #0a3d62;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .contato-rapido h3 {
+            color: white;
+            margin-bottom: 15px;
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .voltar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #0ABAB5;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .voltar-btn:hover {
+            background: #0a8c88;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(10, 186, 181, 0.3);
+        }
+
+        .btn-agendar-footer {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            background: #0a3d62;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-left: 20px;
+        }
+
+        .btn-agendar-footer:hover {
+            background: #0ABAB5;
+            transform: translateY(-3px);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .politica-container {
+                margin-top: 80px;
+            }
+
+            .politica-content {
+                padding: 25px;
+            }
+
+            .politica-header h1 {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .politica-section h2 {
+                font-size: 1.3rem;
+            }
+
+            .btn-agendar-footer {
+                margin-left: 0;
+                margin-top: 15px;
+                display: block;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-stethoscope"></i> Derma<span>Care</span></h1>
+            </div>
+
+            <nav class="nav">
+                <button class="menu-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-list">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="index.html#sobre">Sobre</a></li>
+                    <li><a href="index.html#servicos">Serviços</a></li>
+                    <li><a href="index.html#tecnologias">Tecnologias</a></li>
+                    <li><a href="index.html#contato">Contato</a></li>
+                </ul>
+                <a href="index.html#agendamento" class="btn-agendar">
+                    <i class="fas fa-calendar-alt"></i> Agendar Consulta
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo da Política de Agendamento -->
+    <main class="politica-container">
+        <div class="politica-header">
+            <h1>
+                <i class="fas fa-calendar-check"></i>
+                Política de Agendamento
+            </h1>
+            <p class="data-efeito">Válida a partir de Janeiro de 2026</p>
+            <span class="versao">Versão 2.0</span>
+        </div>
+
+        <div class="politica-content">
+            <div class="alerta-box">
+                <h4><i class="fas fa-exclamation-circle"></i> IMPORTANTE</h4>
+                <p>Ao agendar uma consulta através de nosso site, você automaticamente concorda com todas as condições
+                    estabelecidas nesta política. Recomendamos leitura atenta antes do agendamento.</p>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">1</span> Sobre o Agendamento Online</h2>
+
+                <h3>1.1 Funcionalidades do Sistema</h3>
+                <p>Nosso sistema de agendamento online permite:</p>
+                <ul>
+                    <li><strong>Visualização de horários disponíveis</strong> em tempo real</li>
+                    <li><strong>Seleção de especialista</strong> conforme necessidade</li>
+                    <li><strong>Agendamento 24/7</strong> (sujeito à confirmação)</li>
+                    <li><strong>Recebimento de confirmação</strong> por e-mail e WhatsApp</li>
+                    <li><strong>Lembretes automáticos</strong> 48h e 24h antes da consulta</li>
+                    <li><strong>Cancelamento online</strong> (até 24h antes)</li>
+                </ul>
+
+                <div class="info-box">
+                    <h4><i class="fas fa-info-circle"></i> Horários de Funcionamento</h4>
+                    <ul>
+                        <li><strong>Agendamentos online:</strong> 24 horas por dia, 7 dias por semana</li>
+                        <li><strong>Atendimento presencial:</strong> Segunda a Sexta, 9h às 18h</li>
+                        <li><strong>Atendimento telefônico:</strong> Segunda a Sexta, 9h às 17h</li>
+                        <li><strong>Horário de almoço:</strong> 12h às 14h (sem atendimento)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">2</span> Processo de Agendamento</h2>
+
+                <h3>2.1 Passo a Passo</h3>
+                <ol>
+                    <li><strong>Seleção de serviço:</strong> Escolha entre consulta dermatológica, procedimento
+                        estético, etc.</li>
+                    <li><strong>Seleção de profissional:</strong> Escolha o dermatologista de sua preferência</li>
+                    <li><strong>Escolha de data/horário:</strong> Selecione entre os horários disponíveis</li>
+                    <li><strong>Preenchimento de dados:</strong> Informe dados pessoais e de contato</li>
+                    <li><strong>Confirmação:</strong> Receba e-mail/SMS com código de confirmação</li>
+                    <li><strong>Validação:</strong> Nossa equipe valida e confirma em até 2h úteis</li>
+                </ol>
+
+                <div class="confirmacao-box">
+                    <h4><i class="fas fa-check-circle"></i> Status do Agendamento</h4>
+                    <p>Seu agendamento passa por 3 status:</p>
+                    <ul>
+                        <li><strong>Pendente:</strong> Aguardando confirmação da clínica</li>
+                        <li><strong>Confirmado:</strong> Consulta confirmada e agendada</li>
+                        <li><strong>Cancelado:</strong> Consulta cancelada (por paciente ou clínica)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">3</span> Cancelamentos e Remarcações</h2>
+
+                <h3>3.1 Cancelamento por parte do Paciente</h3>
+                <p>Para cancelar uma consulta agendada:</p>
+                <ul>
+                    <li><strong>Até 24h antes:</strong> Cancelamento sem custos</li>
+                    <li><strong>Entre 24h e 2h antes:</strong> Taxa administrativa de 30% do valor</li>
+                    <li><strong>Menos de 2h antes:</strong> Taxa de 50% do valor da consulta</li>
+                    <li><strong>Falta sem aviso:</strong> Cobrança integral da consulta</li>
+                </ul>
+
+                <div class="alerta-box">
+                    <h4><i class="fas fa-clock"></i> Prazos Importantes</h4>
+                    <p>Os prazos são calculados com base no horário de Brasília. Recomendamos cancelar com antecedência
+                        sempre que possível.</p>
+                </div>
+
+                <h3>3.2 Como Cancelar</h3>
+                <p>Você pode cancelar através de:</p>
+                <ul>
+                    <li><strong>Sistema online:</strong> Pelo link no e-mail de confirmação</li>
+                    <li><strong>WhatsApp:</strong> (11) 99999-9999 (horário comercial)</li>
+                    <li><strong>Telefone:</strong> (11) 3333-4444 (horário comercial)</li>
+                    <li><strong>E-mail:</strong> cancelamentos@dermacare.com.br</li>
+                </ul>
+
+                <h3>3.3 Remarcações</h3>
+                <p>Remarcações seguem as mesmas regras de cancelamento. Para remarcar:</p>
+                <ol>
+                    <li>Cancele a consulta atual (respeitando prazos)</li>
+                    <li>Faça novo agendamento no sistema</li>
+                    <li>Aguarde nova confirmação</li>
+                </ol>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">4</span> Valores e Formas de Pagamento</h2>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tipo de Consulta</th>
+                                <th>Duração</th>
+                                <th>Valor</th>
+                                <th>Formas de Pagamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Primeira Consulta</strong></td>
+                                <td>60 minutos</td>
+                                <td>R$ 350,00</td>
+                                <td>Dinheiro, Cartão, PIX, Convênio</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Retorno</strong></td>
+                                <td>30 minutos</td>
+                                <td>R$ 200,00</td>
+                                <td>Dinheiro, Cartão, PIX, Convênio</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Procedimento Estético</strong></td>
+                                <td>Varia conforme procedimento</td>
+                                <td>A partir de R$ 500,00</td>
+                                <td>Cartão, PIX, Parcelado</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Consulta de Emergência</strong></td>
+                                <td>30-45 minutos</td>
+                                <td>R$ 450,00</td>
+                                <td>Dinheiro, Cartão, PIX</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="info-box">
+                    <h4><i class="fas fa-credit-card"></i> Informações sobre Pagamento</h4>
+                    <ul>
+                        <li><strong>Convênios aceitos:</strong> Amil, Bradesco Saúde, SulAmérica, Porto Seguro</li>
+                        <li><strong>PIX:</strong> Chave CNPJ - 12.345.678/0001-90</li>
+                        <li><strong>Cartões:</strong> Todas as bandeiras (até 12x com juros)</li>
+                        <li><strong>Pagamento na hora:</strong> Somente dinheiro ou cartão</li>
+                        <li><strong>Faturamento para empresas:</strong> Consulte condições</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">5</span> Regras de Conduta</h2>
+
+                <h3>5.1 Pontualidade</h3>
+                <p>A pontualidade é essencial para o bom funcionamento da clínica:</p>
+                <ul>
+                    <li><strong>Chegada:</strong> Recomendamos chegar 15 minutos antes</li>
+                    <li><strong>Atraso do paciente:</strong> Se atrasar mais de 15 minutos, a consulta será cancelada e
+                        sujeita à taxa de falta</li>
+                    <li><strong>Atraso do médico:</strong> Em caso de atraso médico, oferecemos desconto ou
+                        reagendamento</li>
+                    <li><strong>Tempo de tolerância:</strong> 15 minutos para consultas de 60 min, 10 min para 30 min
+                    </li>
+                </ul>
+
+                <h3>5.2 Documentação Necessária</h3>
+                <p>Na primeira consulta, traga:</p>
+                <ul>
+                    <li><strong>Documento com foto:</strong> RG, CNH ou passaporte</li>
+                    <li><strong>Cartão do convênio:</strong> Caso utilize</li>
+                    <li><strong>Exames anteriores:</strong> Relatórios, biópsias, receitas</li>
+                    <li><strong>Lista de medicamentos:</strong> Em uso ou utilizados recentemente</li>
+                </ul>
+
+                <h3>5.3 Comportamento</h3>
+                <p>Reservamo-nos o direito de recusar atendimento em casos de:</p>
+                <ul>
+                    <li>Comportamento agressivo ou desrespeitoso</li>
+                    <li>Intoxicação por álcool ou drogas</li>
+                    <li>Faltas recorrentes sem justificativa</li>
+                    <li>Agendamentos fraudulentos</li>
+                </ul>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">6</span> Casos Especiais</h2>
+
+                <h3>6.1 Emergências Médicas</h3>
+                <div class="alerta-box">
+                    <h4><i class="fas fa-exclamation-triangle"></i> ATENÇÃO - CASOS DE EMERGÊNCIA</h4>
+                    <p><strong>NÃO UTILIZE O SISTEMA DE AGENDAMENTO ONLINE PARA EMERGÊNCIAS.</strong></p>
+                    <p>Em casos de urgência/emergência, procure:</p>
+                    <ul>
+                        <li><strong>Pronto-socorro</strong> mais próximo</li>
+                        <li><strong>SAMU:</strong> 192</li>
+                        <li><strong>Emergência dermatológica:</strong> Apenas para casos graves agendados previamente
+                        </li>
+                    </ul>
+                </div>
+
+                <h3>6.2 Pacientes Menores de Idade</h3>
+                <p>Para pacientes menores de 18 anos:</p>
+                <ul>
+                    <li><strong>Necessário acompanhante maior de idade</strong></li>
+                    <li><strong>Autorização dos pais/responsáveis</strong></li>
+                    <li><strong>Documentos do responsável</strong> (RG e CPF)</li>
+                    <li><strong>Certidão de nascimento</strong> da criança</li>
+                </ul>
+
+                <h3>6.3 Casos COVID-19/Sintomas Respiratórios</h3>
+                <p>Em caso de sintomas respiratórios ou suspeita de COVID-19:</p>
+                <ul>
+                    <li><strong>Informe antecipadamente</strong> para prepararmos ambiente seguro</li>
+                    <li><strong>Use máscara</strong> durante toda a permanência</li>
+                    <li><strong>Considere consulta online</strong> como alternativa</li>
+                </ul>
+            </div>
+
+            <div class="politica-section">
+                <h2><span class="numero-item">7</span> Avisos Importantes</h2>
+
+                <div class="info-box">
+                    <h4><i class="fas fa-bell"></i> Lembretes Automáticos</h4>
+                    <p>Enviamos lembretes automáticos por:</p>
+                    <ul>
+                        <li><strong>E-mail:</strong> 48h e 24h antes da consulta</li>
+                        <li><strong>WhatsApp:</strong> 24h antes da consulta</li>
+                        <li><strong>SMS:</strong> 12h antes (para celulares cadastrados)</li>
+                    </ul>
+                    <p>Não recebeu os lembretes? Verifique sua caixa de spam e confira se os dados estão corretos.</p>
+                </div>
+
+                <h3>7.1 Privacidade</h3>
+                <p>Seus dados de agendamento são tratados conforme nossa <a href="politica-privacidade.html"
+                        target="_blank">Política de Privacidade</a>.</p>
+
+                <h3>7.2 Alterações na Política</h3>
+                <p>Esta política pode ser atualizada periodicamente. Alterações serão comunicadas por:</p>
+                <ul>
+                    <li><strong>E-mail:</strong> Para pacientes com consultas futuras</li>
+                    <li><strong>Site:</strong> Atualização nesta página</li>
+                    <li><strong>Aviso na clínica:</strong> Para pacientes presenciais</li>
+                </ul>
+            </div>
+
+            <div class="contato-rapido">
+                <h3><i class="fas fa-phone-alt"></i> Dúvidas sobre Agendamento?</h3>
+                <p>Entre em contato conosco:</p>
+                <ul style="color: white;">
+                    <li><strong>WhatsApp:</strong> (11) 99999-9999</li>
+                    <li><strong>Telefone:</strong> (11) 3333-4444</li>
+                    <li><strong>E-mail:</strong> agendamento@dermacare.com.br</li>
+                    <li><strong>Horário:</strong> Seg-Sex, 9h às 17h</li>
+                </ul>
+            </div>
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px; flex-wrap: wrap;">
+                <a href="index.html" class="voltar-btn">
+                    <i class="fas fa-arrow-left"></i> Voltar para o Site
+                </a>
+
+                <a href="index.html#agendamento" class="btn-agendar-footer">
+                    <i class="fas fa-calendar-alt"></i> Agendar Consulta
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <h2><i class="fas fa-stethoscope"></i> Derma<span>Care</span></h2>
+                    </div>
+                    <p class="footer-desc">Clínica dermatológica especializada em tratamentos de pele, cabelo e unhas.
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Documentos Legais</h3>
+                    <ul class="footer-links">
+                        <li><a href="politica-privacidade.html" target="_blank">Política de Privacidade</a></li>
+                        <li><a href="termos-uso.html" target="_blank">Termos de Uso</a></li>
+                        <li><a href="politica-agendamento.html" target="_blank">Política de Agendamento</a></li>
+                        <li><a href="index.html#contato">Contato</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Informações</h3>
+                    <ul class="footer-links">
+                        <li>CNPJ: 12.345.678/0001-90</li>
+                        <li>CRM-SP: 123456</li>
+                        <li>Responsável Técnico: Dra. Mariana Santos</li>
+                        <li>Horário: Seg-Sex, 9h às 18h</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 DermaCare Clínica Dermatológica. Todos os direitos reservados.</p>
+                    <div class="footer-legal">
+                        <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>
+                        <span>|</span>
+                        <a href="termos-uso.html" target="_blank">Termos de Uso</a>
+                        <span>|</span>
+                        <a href="politica-agendamento.html" target="_blank">Política de Agendamento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript para menu mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navList = document.querySelector('.nav-list');
+
+            if (menuToggle && navList) {
+                menuToggle.addEventListener('click', function () {
+                    navList.classList.toggle('active');
+                    menuToggle.innerHTML = navList.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
+                        : '<i class="fas fa-bars"></i>';
+                    menuToggle.setAttribute('aria-expanded', navList.classList.contains('active'));
+                });
+
+                // Fechar menu ao clicar em um link
+                document.querySelectorAll('.nav-list a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        navList.classList.remove('active');
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+
+                // Fechar menu ao clicar fora
+                document.addEventListener('click', function (e) {
+                    if (!navList.contains(e.target) && !menuToggle.contains(e.target) && navList.classList.contains('active')) {
+                        navList.classList.remove('active');
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            // Data atual no footer (opcional)
+            const yearSpan = document.querySelector('#current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
+</body>
+
+</html>

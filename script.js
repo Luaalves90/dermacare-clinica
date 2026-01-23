@@ -41,41 +41,709 @@ let dataSelecionada = null;
 // ============================================
 // INICIALIZAÇÃO DA APLICAÇÃO
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DermaCare - Inicializando...');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DermaCare - Inicializando sistema...');
     
-    initApplication();
+    try {
+        initMenuMobile();
+        initModalAgendamento();
+        initChatbot();
+        initCarrosselDepoimentos();
+        initFormularios();
+        initScrollSuave();
+        initTestePele();
+        initSistemaHorarios();
+        
+        // Abrir chatbot automático após delay
+        setTimeout(function() {
+            const chatbot = document.querySelector('.chatbot-container');
+            if (chatbot && !chatbotOpen) {
+                chatbot.classList.add('active');
+                chatbotOpen = true;
+                console.log('🤖 Chatbot aberto automaticamente');
+            }
+        }, CONFIG.autoChatbotDelay);
+        
+        // Botão de ligar para mobile
+        if (window.innerWidth <= 768) {
+            createCallButton();
+        }
+        
+        console.log('✅ Sistema inicializado com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro na inicialização:', error);
+    }
 });
 
-function initApplication() {
-    initMenuMobile();
-    initChatbot();
-    initModalAgendamento();
-    initCarrosselDepoimentos();
-    initFormularios();
-    initScrollSuave();
-    initTestePele();
-    initImageOptimization();
+// ============================================
+// 1. MENU MOBILE
+// ============================================
+function initMenuMobile() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navList = document.querySelector('.nav-list');
     
-    // Inicializar sistema de horários
-    initSistemaHorarios();
-    
-    setTimeout(openChatbot, CONFIG.autoChatbotDelay);
-    
-    if (window.innerWidth <= 768) {
-        createCallButton();
+    if (!menuToggle || !navList) {
+        console.warn('⚠️ Elementos do menu mobile não encontrados');
+        return;
     }
     
-    console.log('✅ Aplicação inicializada com sucesso!');
+    menuToggle.addEventListener('click', function() {
+        navList.classList.toggle('active');
+        const isActive = navList.classList.contains('active');
+        menuToggle.innerHTML = isActive 
+            ? '<i class="fas fa-times"></i>' 
+            : '<i class="fas fa-bars"></i>';
+        menuToggle.setAttribute('aria-expanded', isActive);
+        console.log('📱 Menu mobile:', isActive ? 'aberto' : 'fechado');
+    });
+    
+    // Fechar menu ao clicar em um link
+    document.querySelectorAll('.nav-list a').forEach(function(link) {
+        link.addEventListener('click', function() {
+            navList.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+    
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (!navList.contains(e.target) && !menuToggle.contains(e.target) && navList.classList.contains('active')) {
+            navList.classList.remove('active');
+            menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
 }
 
 // ============================================
-// SISTEMA DE HORÁRIOS FIXOS COM BLOQUEIO
+// 2. MODAL DE AGENDAMENTO - CORREÇÃO COMPLETA
+// ============================================
+function initModalAgendamento() {
+    console.log('🔧 Configurando modal de agendamento...');
+    
+    const modal = document.getElementById('agendamentoModal');
+    if (!modal) {
+        console.error('❌ Modal de agendamento não encontrado!');
+        return;
+    }
+    
+    console.log('✅ Modal encontrado');
+    
+    // Botão de fechar
+    const closeBtn = modal.querySelector('.close-modal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+        console.log('✅ Botão de fechar configurado');
+    }
+    
+    // Configurar TODOS os botões que abrem o modal
+    configurarBotoesAberturaModal();
+    
+    // Fechar modal ao clicar fora
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    // Fechar com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // Formulário
+    const form = document.getElementById('agendamentoForm');
+    if (form) {
+        form.addEventListener('submit', handleAgendamentoSubmit);
+        console.log('✅ Formulário configurado');
+    }
+    
+    // Máscara de telefone
+    const telefoneInput = document.getElementById('telefone');
+    if (telefoneInput) {
+        telefoneInput.addEventListener('input', formatarTelefone);
+    }
+    
+    console.log('✅ Modal de agendamento completamente configurado');
+}
+
+function configurarBotoesAberturaModal() {
+    // Lista de seletores de botões que devem abrir o modal
+    const seletoresBotoes = [
+        '#openAgendamento',           // Header
+        '#openAgendamento2',          // Hero
+        '#openAgendamento3',          // Footer
+        '.btn-agendar-teste',         // Teste de pele
+        '.chat-option[data-option="agendar"]',
+        '.chat-option[data-action="agendar-form"]'
+    ];
+    
+    seletoresBotoes.forEach(function(seletor) {
+        document.querySelectorAll(seletor).forEach(function(botao) {
+            botao.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🎯 Botão clicado para abrir modal:', seletor);
+                openModal('agendamentoModal');
+            });
+        });
+    });
+    
+    // Também configurar manualmente botões comuns
+    const botaoHeader = document.querySelector('.btn-agendar');
+    if (botaoHeader && !botaoHeader.id) {
+        botaoHeader.id = 'openAgendamento';
+        botaoHeader.addEventListener('click', function(e) {
+            e.preventDefault();
+            openModal('agendamentoModal');
+        });
+    }
+    
+    console.log(`✅ ${seletoresBotoes.length} tipos de botões configurados para abrir modal`);
+}
+
+function openModal(modalId) {
+    console.log(`🟢 Tentando abrir modal: ${modalId}`);
+    
+    const modal = document.getElementById(modalId);
+    if (!modal) {
+        console.error(`❌ Modal ${modalId} não encontrado!`);
+        return;
+    }
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
+    
+    console.log('✅ Modal aberto com sucesso!');
+    
+    // Focar no primeiro campo se for modal de agendamento
+    if (modalId === 'agendamentoModal') {
+        setTimeout(function() {
+            const primeiroCampo = modal.querySelector('#nome, input, select, textarea');
+            if (primeiroCampo) {
+                primeiroCampo.focus();
+            }
+        }, 300);
+    }
+}
+
+function closeModal() {
+    console.log('🔴 Fechando modal...');
+    
+    const modal = document.querySelector('.modal.active');
+    if (!modal) {
+        console.warn('⚠️ Nenhum modal ativo para fechar');
+        return;
+    }
+    
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    document.body.classList.remove('modal-open');
+    
+    // Resetar mensagem de sucesso se estiver visível
+    const successDiv = document.getElementById('successMessage');
+    const form = document.getElementById('agendamentoForm');
+    if (successDiv && successDiv.style.display !== 'none') {
+        successDiv.style.display = 'none';
+        if (form) {
+            form.style.display = 'block';
+            form.reset();
+        }
+    }
+    
+    console.log('✅ Modal fechado com sucesso');
+}
+
+// ============================================
+// 3. CHATBOT - CORREÇÃO COMPLETA
+// ============================================
+function initChatbot() {
+    console.log('🔧 Configurando chatbot...');
+    
+    const chatbotToggle = document.querySelector('.chatbot-toggle');
+    if (!chatbotToggle) {
+        console.error('❌ Botão do chatbot não encontrado!');
+        return;
+    }
+    
+    console.log('✅ Botão do chatbot encontrado');
+    
+    // Toggle do chatbot
+    chatbotToggle.addEventListener('click', function() {
+        toggleChatbot();
+    });
+    
+    // Botão de fechar
+    const closeBtn = document.querySelector('.close-chatbot');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            closeChatbotHandler();
+        });
+    }
+    
+    // Configurar opções do chatbot
+    configurarOpcoesChatbot();
+    
+    // Configurar envio de mensagens
+    configurarEnvioMensagens();
+    
+    console.log('✅ Chatbot completamente configurado');
+}
+
+function toggleChatbot() {
+    const chatbotContainer = document.querySelector('.chatbot-container');
+    if (!chatbotContainer) {
+        console.error('❌ Container do chatbot não encontrado!');
+        return;
+    }
+    
+    chatbotContainer.classList.toggle('active');
+    chatbotOpen = chatbotContainer.classList.contains('active');
+    
+    if (chatbotOpen) {
+        setTimeout(function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.focus();
+            }
+        }, 300);
+    }
+    
+    console.log('🤖 Chatbot:', chatbotOpen ? 'ABERTO' : 'FECHADO');
+}
+
+function closeChatbotHandler() {
+    const chatbotContainer = document.querySelector('.chatbot-container');
+    if (chatbotContainer) {
+        chatbotContainer.classList.remove('active');
+        chatbotOpen = false;
+        console.log('🤖 Chatbot fechado');
+    }
+}
+
+function configurarOpcoesChatbot() {
+    document.addEventListener('click', function(e) {
+        // Verificar se clicou em uma opção do chatbot
+        const chatOption = e.target.closest('.chat-option');
+        if (chatOption) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const optionType = chatOption.getAttribute('data-option') || 
+                              chatOption.getAttribute('data-action') ||
+                              chatOption.getAttribute('data-faq');
+            
+            console.log('🤖 Opção do chatbot selecionada:', optionType);
+            
+            if (optionType === 'agendar' || optionType === 'agendar-form') {
+                // Adicionar mensagem do bot
+                addBotMessage('Ótimo! Vou abrir o formulário de agendamento para você...');
+                
+                // Fechar chatbot e abrir modal
+                setTimeout(function() {
+                    closeChatbotHandler();
+                    setTimeout(function() {
+                        openModal('agendamentoModal');
+                    }, 300);
+                }, 1000);
+            }
+        }
+    });
+}
+
+function configurarEnvioMensagens() {
+    const sendBtn = document.getElementById('sendMessage');
+    const chatInput = document.getElementById('chatInput');
+    
+    if (!sendBtn || !chatInput) {
+        console.warn('⚠️ Elementos de envio de mensagem não encontrados');
+        return;
+    }
+    
+    // Enviar ao clicar no botão
+    sendBtn.addEventListener('click', function() {
+        sendUserMessage();
+    });
+    
+    // Enviar ao pressionar Enter
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendUserMessage();
+        }
+    });
+    
+    console.log('✅ Sistema de mensagens configurado');
+}
+
+function sendUserMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const message = chatInput?.value.trim();
+    
+    if (!message) return;
+    
+    // Adicionar mensagem do usuário
+    addUserMessage(message);
+    
+    // Limpar input
+    chatInput.value = '';
+    
+    // Resposta inteligente do bot (USANDO A NOVA FUNÇÃO)
+    setTimeout(function() {
+        const botResponse = getBotResponse(message);
+        addBotMessage(botResponse);
+    }, 800);
+}
+function configurarOpcoesChatbot() {
+    document.addEventListener('click', function(e) {
+        const chatOption = e.target.closest('.chat-option');
+        if (chatOption) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const optionType = chatOption.getAttribute('data-action') || 
+                              chatOption.getAttribute('data-option');
+            
+            if (optionType) {
+                const resposta = getBotResponseForOption(optionType);
+                addBotMessage(resposta);
+                
+                // Se for agendar, abre o modal
+                if (optionType === 'agendar') {
+                    setTimeout(() => {
+                        closeChatbotHandler();
+                        openModal('agendamentoModal');
+                    }, 1500);
+                }
+            }
+        }
+    });
+}
+
+function addUserMessage(text) {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    if (!chatbotMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message user';
+    
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    messageDiv.innerHTML = `
+        <p>${text}</p>
+        <p class="message-time">${timeString}</p>
+    `;
+    
+    chatbotMessages.appendChild(messageDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function addBotMessage(text) {
+    const chatbotMessages = document.getElementById('chatbotMessages');
+    if (!chatbotMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message bot';
+    
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    messageDiv.innerHTML = `
+        <p>${text}</p>
+        <p class="message-time">${timeString}</p>
+    `;
+    
+    chatbotMessages.appendChild(messageDiv);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+// NOVA FUNÇÃO: Análise da mensagem do usuário
+function getBotResponse(userMessage) {
+    const msg = userMessage.toLowerCase().trim();
+    
+    // 🔍 VERIFICAÇÕES POR CATEGORIA
+    
+    // 1. AGENDAMENTO
+    if (msg.includes('agendar') || msg.includes('marcar') || msg.includes('consulta') || msg.includes('marcação')) {
+        return getBotResponseForOption('agendar');
+    }
+    
+    // 2. VALORES
+    if (msg.includes('valor') || msg.includes('preço') || msg.includes('quanto custa') || msg.includes('custa quanto')) {
+        return getBotResponseForOption('valores');
+    }
+    
+    // 3. HORÁRIOS
+    if (msg.includes('horário') || msg.includes('funciona') || msg.includes('aberto') || msg.includes('horario') || msg.includes('atende')) {
+        return getBotResponseForOption('horarios');
+    }
+    
+    // 4. CANCELAMENTO
+    if (msg.includes('cancelar') || msg.includes('remarcar') || msg.includes('desmarcar') || msg.includes('falta')) {
+        return getBotResponseForOption('cancelar');
+    }
+    
+    // 5. LOCALIZAÇÃO
+    if (msg.includes('onde fica') || msg.includes('local') || msg.includes('endereço') || msg.includes('endereco') || msg.includes('chegar')) {
+        return getBotResponseForOption('localizacao');
+    }
+    
+    // 6. CONTATO
+    if (msg.includes('telefone') || msg.includes('contato') || msg.includes('whatsapp') || msg.includes('ligar') || msg.includes('email')) {
+        return getBotResponseForOption('contato');
+    }
+    
+    // 7. CONVÊNIOS
+    if (msg.includes('convênio') || msg.includes('convenio') || msg.includes('plano') || msg.includes('unimed') || msg.includes('amil')) {
+        return getBotResponseForOption('convênio');
+    }
+    
+    // 8. DOCUMENTOS
+    if (msg.includes('documento') || msg.includes('trazer') || msg.includes('primeira consulta') || msg.includes('leve')) {
+        return getBotResponseForOption('documentos');
+    }
+    
+    // 9. PONTUALIDADE
+    if (msg.includes('atrasar') || msg.includes('pontual') || msg.includes('horário da consulta') || msg.includes('chegar cedo')) {
+        return getBotResponseForOption('pontualidade');
+    }
+    
+    // 🚫 PERGUNTAS TÉCNICAS/DIAGNÓSTICO - REDIRECIONAR
+    if (
+        msg.includes('procedimento') || msg.includes('tratamento') || msg.includes('como funciona') || 
+        msg.includes('injeção') || msg.includes('laser') || msg.includes('ácido') || msg.includes('acido') ||
+        msg.includes('preenchimento') || msg.includes('botox') || msg.includes('preenchimento') ||
+        msg.includes('mancha') || msg.includes('verruga') || msg.includes('câncer') || msg.includes('cancer') ||
+        msg.includes('alergia') || msg.includes('coceira') || msg.includes('dor') || msg.includes('vermelhidão') ||
+        msg.includes('diagnóstico') || msg.includes('diagnostico') || msg.includes('doença') || msg.includes('doenca') ||
+        msg.includes('receita') || msg.includes('medicamento') || msg.includes('pomada') || msg.includes('creme')
+    ) {
+        return getBotResponseForOption('tecnica');
+    }
+    
+    // 🚨 EMERGÊNCIAS
+    if (msg.includes('emergência') || msg.includes('emergencia') || msg.includes('urgente') || 
+        msg.includes('sangrando') || msg.includes('infecção') || msg.includes('infeccao') || 
+        msg.includes('dor forte') || msg.includes('febre alta')) {
+        return getBotResponseForOption('emergencia');
+    }
+    
+    // 🤔 PERGUNTAS GERAIS SOBRE A CLÍNICA
+    if (msg.includes('oi') || msg.includes('olá') || msg.includes('ola') || msg.includes('bom dia') || 
+        msg.includes('boa tarde') || msg.includes('boa noite')) {
+        return getBotResponseForOption('saudacao');
+    }
+    
+    // 📋 OPÇÕES
+    if (msg.includes('opções') || msg.includes('opcoes') || msg.includes('ajuda') || msg.includes('o que pode fazer')) {
+        return getBotResponseForOption('opcoes');
+    }
+    
+    // 🔍 PADRÃO - Não entendeu
+    return "Desculpe, não entendi sua pergunta. Posso ajudar com:<br>" +
+           "• Agendamento de consultas<br>" +
+           "• Valores e formas de pagamento<br>" +
+           "• Horários de funcionamento<br>" +
+           "• Política de cancelamento<br>" +
+           "• Localização e contato<br>" +
+           "Digite 'opções' para ver mais.";
+}
+
+// NOVA FUNÇÃO: Banco de respostas
+function getBotResponseForOption(opcao) {
+    const respostas = {
+        'saudacao': `👋 Olá! Sou o assistente virtual da DermaCare. Posso ajudar você com:<br>
+                    • Informações sobre agendamento<br>
+                    • Valores e horários<br>
+                    • Políticas da clínica<br>
+                    • Localização e contato<br><br>
+                    Como posso ajudá-lo hoje?`,
+
+        'opcoes': `📋 Posso ajudar com:<br><br>
+                  🏥 <strong>Serviços:</strong><br>
+                  • Agendar consulta<br>
+                  • Valores e convênios<br>
+                  • Horários de funcionamento<br>
+                  • Documentos necessários<br><br>
+                  📞 <strong>Informações:</strong><br>
+                  • Endereço e contato<br>
+                  • Política de cancelamento<br>
+                  • Formas de pagamento<br>
+                  • Pontualidade e regras<br><br>
+                  <em>Digite sua pergunta ou escolha uma opção acima!</em>`,
+
+        'agendar': `📅 <strong>AGENDAMENTO DE CONSULTA</strong><br><br>
+                   Para agendar, você pode:<br>
+                   1. <strong>Clique em "Agendar Consulta"</strong> no menu<br>
+                   2. <strong>Preencha o formulário online</strong> com seus dados<br>
+                   3. <strong>Escolha data e horário</strong> disponíveis<br>
+                   4. <strong>Confirmação por e-mail</strong> em até 2h úteis<br><br>
+                   <strong>Valores:</strong><br>
+                   • Primeira consulta: R$ 350,00 (60min)<br>
+                   • Retorno: R$ 200,00 (30min)<br>
+                   • Procedimentos: A partir de R$ 500,00<br><br>
+                   <em>Vou abrir o formulário para você...</em>`,
+
+        'valores': `💰 <strong>VALORES E PAGAMENTOS</strong><br><br>
+                   <strong>Consultas:</strong><br>
+                   • Primeira consulta: R$ 350,00 (60 minutos)<br>
+                   • Consulta de retorno: R$ 200,00 (30 minutos)<br>
+                   • Consulta de emergência: R$ 450,00<br><br>
+                   <strong>Formas de pagamento:</strong><br>
+                   • Dinheiro<br>
+                   • Cartões (todas as bandeiras)<br>
+                   • PIX (Chave CNPJ: 12.345.678/0001-90)<br>
+                   • Convênios (Amil, Bradesco, SulAmérica, Porto Seguro)<br><br>
+                   <strong>Política de reembolso:</strong> Segue legislação vigente.`,
+
+        'horarios': `⏰ <strong>HORÁRIOS DE FUNCIONAMENTO</strong><br><br>
+                    <strong>Atendimento presencial:</strong><br>
+                    • Segunda a Sexta: 9h às 18h<br>
+                    • Sábado: 9h às 13h<br>
+                    • Domingo: Fechado<br><br>
+                    <strong>Horário de almoço:</strong> 12h às 14h<br><br>
+                    <strong>Agendamento online:</strong> 24 horas por dia<br><br>
+                    <strong>Tempo de consulta:</strong><br>
+                    • Primeira: 60 minutos<br>
+                    • Retorno: 30 minutos`,
+
+        'cancelar': `❌ <strong>POLÍTICA DE CANCELAMENTO</strong><br><br>
+                    <strong>Cancelamento por parte do paciente:</strong><br>
+                    • Até 24h antes: <strong>sem custos</strong><br>
+                    • Entre 24h e 2h antes: <strong>taxa de 30%</strong><br>
+                    • Menos de 2h antes: <strong>taxa de 50%</strong><br>
+                    • Falta sem aviso: <strong>cobrança integral</strong><br><br>
+                    <strong>Como cancelar:</strong><br>
+                    • Link no e-mail de confirmação<br>
+                    • WhatsApp: (11) 99999-9999<br>
+                    • Telefone: (11) 3333-4444<br>
+                    • E-mail: cancelamentos@dermacare.com.br<br><br>
+                    <strong>Remarcações:</strong> Cancele e faça novo agendamento.`,
+
+        'localizacao': `🗺️ <strong>LOCALIZAÇÃO</strong><br><br>
+                       <strong>Endereço:</strong><br>
+                       Av. Paulista, 1000<br>
+                       Bela Vista, São Paulo - SP<br>
+                       CEP: 01310-000<br><br>
+                       <strong>Como chegar:</strong><br>
+                       • Metrô: Estação Trianon-MASP (Linha 2-Verde)<br>
+                       • Ônibus: Diversas linhas na Av. Paulista<br>
+                       • Estacionamento: Há vagas no local<br><br>
+                       <strong>Use o mapa no rodapé do site para navegação!</strong>`,
+
+        'contato': `📞 <strong>CONTATO</strong><br><br>
+                   <strong>Telefone fixo:</strong> (11) 3333-4444<br>
+                   <strong>WhatsApp:</strong> (11) 99999-9999<br>
+                   <strong>E-mail:</strong> contato@dermacare.com.br<br><br>
+                   <strong>Horário de atendimento telefônico:</strong><br>
+                   • Segunda a Sexta: 9h às 17h<br>
+                   • Sábado: 9h às 13h<br><br>
+                   <strong>Jurídico:</strong> juridico@dermacare.com.br<br>
+                   <strong>Agendamento:</strong> agendamento@dermacare.com.br`,
+
+        'convênio': `🏥 <strong>CONVÊNIOS ACEITOS</strong><br><br>
+                    Aceitamos os seguintes convênios:<br>
+                    • Amil<br>
+                    • Bradesco Saúde<br>
+                    • SulAmérica<br>
+                    • Porto Seguro<br><br>
+                    <strong>Importante:</strong><br>
+                    • Traga carteirinha na consulta<br>
+                    • Verifique cobertura com seu convênio<br>
+                    • Alguns procedimentos podem não ser cobertos<br><br>
+                    <em>Para consultas particulares, aceitamos todas formas de pagamento.</em>`,
+
+        'documentos': `📄 <strong>DOCUMENTAÇÃO NECESSÁRIA</strong><br><br>
+                      <strong>Para primeira consulta, traga:</strong><br>
+                      1. <strong>Documento com foto:</strong> RG, CNH ou passaporte<br>
+                      2. <strong>Cartão do convênio:</strong> Se for utilizar<br>
+                      3. <strong>Exames anteriores:</strong> Relatórios, biópsias, receitas<br>
+                      4. <strong>Lista de medicamentos:</strong> Em uso atualmente<br><br>
+                      <strong>Para menores de 18 anos:</strong><br>
+                      • Autorização dos pais/responsáveis<br>
+                      • Documentos do responsável<br>
+                      • Certidão de nascimento da criança`,
+
+        'pontualidade': `⏰ <strong>PONTUALIDADE E REGRAS</strong><br><br>
+                        <strong>Chegada:</strong> Recomendamos chegar 15 minutos antes<br><br>
+                        <strong>Tolerância:</strong><br>
+                        • Consultas de 60min: 15 minutos<br>
+                        • Consultas de 30min: 10 minutos<br><br>
+                        <strong>Atrasos:</strong><br>
+                        • Mais de 15min: consulta cancelada<br>
+                        • Sujeito à taxa de falta<br><br>
+                        <strong>Comportamento:</strong><br>
+                        • Respeito à equipe e outros pacientes<br>
+                        • Uso de máscara se com sintomas respiratórios`,
+
+        'tecnica': `🩺 <strong>INFORMAÇÃO IMPORTANTE</strong><br><br>
+                   Desculpe, mas <strong>não posso fornecer informações técnicas, diagnósticos ou recomendações médicas específicas</strong>.<br><br>
+                   <strong>Por que?</strong><br>
+                   • Cada caso dermatológico é único<br>
+                   • Diagnóstico requer avaliação presencial<br>
+                   • Tratamentos devem ser personalizados<br><br>
+                   <strong>O que fazer:</strong><br>
+                   • <strong>Agende uma consulta</strong> para avaliação completa<br>
+                   • Nossa dermatologista avaliará seu caso pessoalmente<br>
+                   • Receberá orientações específicas para você<br><br>
+                   <em>A sua saúde em primeiro lugar!</em>`,
+
+        'emergencia': `🚨 <strong>EMERGÊNCIA MÉDICA</strong><br><br>
+                      <strong>ATENÇÃO: NÃO USE ESTE CHAT PARA EMERGÊNCIAS!</strong><br><br>
+                      <strong>Se você está com:</strong><br>
+                      • Dor intensa<br>
+                      • Sangramento importante<br>
+                      • Dificuldade para respirar<br>
+                      • Febre muito alta<br>
+                      • Reação alérgica grave<br><br>
+                      <strong>PROCURE IMEDIATAMENTE:</strong><br>
+                      1. <strong>Pronto-socorro</strong> mais próximo<br>
+                      2. <strong>SAMU: 192</strong><br>
+                      3. <strong>Corpo de Bombeiros: 193</strong><br><br>
+                      <em>Este chat é apenas para informações administrativas!</em>`,
+
+        'default': `🤔 <strong>NÃO ENTENDI</strong><br><br>
+                   Desculpe, não entendi sua pergunta. Posso ajudar com:<br><br>
+                   📅 <strong>Agendamento:</strong> Valores, horários, como agendar<br>
+                   📋 <strong>Informações:</strong> Documentos, convênios, localização<br>
+                   📞 <strong>Contato:</strong> Telefones, e-mails, endereço<br>
+                   ❌ <strong>Políticas:</strong> Cancelamento, pontualidade<br><br>
+                   <em>Tente perguntar de outra forma ou digite "opções"!</em>`
+    };
+    
+    return respostas[opcao] || respostas['default'];
+}
+
+// NOVA FUNÇÃO: Mensagem inicial do chatbot
+function mostrarMensagemInicial() {
+    if (!chatbotOpen) return;
+    
+    setTimeout(function() {
+        addBotMessage(getBotResponseForOption('saudacao'));
+    }, 1000);
+}
+
+// ============================================
+// 4. SISTEMA DE HORÁRIOS
 // ============================================
 function initSistemaHorarios() {
-    const dataInput = document.getElementById('data-escolhida');
+    console.log('🔧 Configurando sistema de horários...');
     
-    if (!dataInput) return;
+    const dataInput = document.getElementById('data-escolhida');
+    if (!dataInput) {
+        console.warn('⚠️ Campo de data não encontrado');
+        return;
+    }
     
     // Configurar data mínima (amanhã)
     const amanha = new Date();
@@ -86,118 +754,63 @@ function initSistemaHorarios() {
     const dataPadrao = new Date();
     dataPadrao.setDate(dataPadrao.getDate() + 3);
     dataInput.value = dataPadrao.toISOString().split('T')[0];
+    dataSelecionada = dataInput.value;
+    
+    console.log('📅 Data inicial configurada:', dataSelecionada);
     
     // Event listener para mudança de data
     dataInput.addEventListener('change', function(e) {
         dataSelecionada = e.target.value;
         if (dataSelecionada) {
+            console.log('📅 Data alterada para:', dataSelecionada);
             carregarHorariosDisponiveis(dataSelecionada);
         }
     });
     
-    // Carregar horários para a data padrão inicialmente
-    dataSelecionada = dataInput.value;
+    // Carregar horários inicialmente
     carregarHorariosDisponiveis(dataSelecionada);
 }
 
-async function carregarHorariosDisponiveis(data) {
-    console.log('📅 Carregando horários para:', data);
+function carregarHorariosDisponiveis(data) {
+    console.log('⏰ Carregando horários para:', data);
     
     const container = document.getElementById('horarios-disponiveis');
-    const campoHorario = document.getElementById('horario-escolhido');
-    
-    if (!container) return;
+    if (!container) {
+        console.error('❌ Container de horários não encontrado');
+        return;
+    }
     
     // Mostrar loading
     container.innerHTML = `
         <div class="loading-horarios">
             <i class="fas fa-spinner fa-spin"></i>
-            Carregando horários disponíveis...
+            Buscando horários disponíveis...
         </div>
     `;
     
-    // Resetar horário selecionado
-    horarioSelecionado = null;
-    if (campoHorario) campoHorario.value = '';
-    
-    try {
-        // Buscar horários ocupados no Google Calendar
-        const horariosOcupados = await buscarHorariosOcupados(data);
-        
-        // Gerar botões de horário
-        gerarBotoesHorario(container, data, horariosOcupados);
-        
-    } catch (error) {
-        console.error('Erro ao carregar horários:', error);
-        container.innerHTML = `
-            <div class="no-horarios">
-                <i class="fas fa-exclamation-triangle"></i>
-                Não foi possível carregar os horários disponíveis.
-                <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">
-                    Tente novamente ou entre em contato: (11) 99999-9999
-                </p>
-            </div>
-        `;
-    }
+    // Simular carregamento (em produção, buscar do Google Calendar)
+    setTimeout(function() {
+        gerarBotoesHorario(container, data);
+    }, 800);
 }
 
-async function buscarHorariosOcupados(data) {
-    try {
-        // Formatar data para o formato brasileiro
-        const [ano, mes, dia] = data.split('-');
-        const dataFormatada = `${dia}/${mes}/${ano}`;
-        
-        // Chamar o Google Apps Script para verificar horários ocupados
-        const response = await fetch(CONFIG.googleScriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'buscarHorariosDisponiveis',
-                data: dataFormatada
-            }),
-            mode: 'no-cors'
-        });
-        
-        // Em produção, você processaria a resposta do Google Script
-        // Para demonstração, retornamos um array vazio
-        return [];
-        
-    } catch (error) {
-        console.error('Erro ao buscar horários ocupados:', error);
-        return [];
-    }
-}
-
-function gerarBotoesHorario(container, data, horariosOcupados) {
-    const hoje = new Date().toISOString().split('T')[0];
-    const dataSelecionadaObj = new Date(data);
-    const diaSemana = dataSelecionadaObj.getDay();
-    
-    // Verificar se é final de semana
+function gerarBotoesHorario(container, data) {
+    const hoje = new Date();
+    const dataObj = new Date(data);
+    const diaSemana = dataObj.getDay();
     const ehFinalDeSemana = diaSemana === 0 || diaSemana === 6;
     
     let html = '';
     let horariosDisponiveisCount = 0;
     
     // Para cada horário fixo
-    CONFIG.horariosFixos.forEach(horario => {
+    CONFIG.horariosFixos.forEach(function(horario) {
         const [hora, minuto] = horario.split(':').map(Number);
-        
-        // Criar objeto Date para verificação
-        const dataHora = new Date(dataSelecionadaObj);
+        const dataHora = new Date(dataObj);
         dataHora.setHours(hora, minuto, 0, 0);
         
         // Verificar status do horário
-        const status = verificarStatusHorario(
-            data, 
-            horario, 
-            horariosOcupados, 
-            dataSelecionadaObj,
-            ehFinalDeSemana
-        );
-        
+        const status = verificarStatusHorario(dataHora, horario, ehFinalDeSemana);
         const classes = `horario-btn ${status.classe}`;
         const disabled = status.disponivel ? '' : 'disabled';
         const ariaLabel = `${horario} - ${status.texto}`;
@@ -237,25 +850,22 @@ function gerarBotoesHorario(container, data, horariosOcupados) {
                 <i class="fas fa-calendar-times"></i>
                 ${mensagem}
                 <p style="font-size: 0.9rem; margin-top: 10px; color: #666;">
-                    Selecione outra data ou entre em contato.
+                    Selecione outra data ou entre em contato: (11) 99999-9999
                 </p>
             </div>
         `;
     }
     
     container.innerHTML = html;
+    console.log(`⏰ ${horariosDisponiveisCount} horários disponíveis gerados`);
 }
 
-function verificarStatusHorario(data, horario, horariosOcupados, dataSelecionadaObj, ehFinalDeSemana) {
+function verificarStatusHorario(dataHora, horario, ehFinalDeSemana) {
     const hoje = new Date();
-    const [hora, minuto] = horario.split(':').map(Number);
-    
-    // Criar objeto Date completo
-    const dataHoraCompleta = new Date(dataSelecionadaObj);
-    dataHoraCompleta.setHours(hora, minuto, 0, 0);
+    const [hora] = horario.split(':').map(Number);
     
     // Verificar se é passado
-    if (dataHoraCompleta < hoje) {
+    if (dataHora < hoje) {
         return {
             classe: 'indisponivel passado',
             texto: 'Horário já passado',
@@ -282,7 +892,7 @@ function verificarStatusHorario(data, horario, horariosOcupados, dataSelecionada
     }
     
     // Verificar se é horário de almoço (12h-14h sempre indisponível)
-    if ((hora >= 12 && hora < 14) || (horario === '11:00' && CONFIG.duracaoConsulta > 60)) {
+    if (hora >= 12 && hora < 14) {
         return {
             classe: 'almoço',
             texto: 'Horário de almoço',
@@ -290,17 +900,7 @@ function verificarStatusHorario(data, horario, horariosOcupados, dataSelecionada
         };
     }
     
-    // Verificar se já está ocupado (simulação)
-    const estaOcupado = horariosOcupados.some(ocupado => ocupado === horario);
-    
-    if (estaOcupado) {
-        return {
-            classe: 'indisponivel',
-            texto: 'Horário já agendado',
-            disponivel: false
-        };
-    }
-    
+    // Se passou por todas as verificações, está disponível
     return {
         classe: 'disponivel',
         texto: 'Horário disponível',
@@ -309,286 +909,16 @@ function verificarStatusHorario(data, horario, horariosOcupados, dataSelecionada
 }
 
 // ============================================
-// FUNÇÃO PARA SELECIONAR HORÁRIO (EXPORTADA)
+// 5. FORMULÁRIO DE AGENDAMENTO
 // ============================================
-function selecionarHorario(horario, elemento) {
-    // Desselecionar horário anterior
-    document.querySelectorAll('.horario-btn').forEach(btn => {
-        btn.classList.remove('selecionado');
-    });
-    
-    // Selecionar novo horário
-    elemento.classList.add('selecionado');
-    horarioSelecionado = horario;
-    
-    // Atualizar campo oculto
-    const campoHorario = document.getElementById('horario-escolhido');
-    if (campoHorario) {
-        campoHorario.value = horario;
-        campoHorario.dispatchEvent(new Event('change'));
-    }
-    
-    console.log('⏰ Horário selecionado:', horario, 'para', dataSelecionada);
-}
-
-// ============================================
-// MENU MOBILE (CORRIGIDO)
-// ============================================
-function initMenuMobile() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navList = document.querySelector('.nav-list');
-    
-    if (!menuToggle || !navList) return;
-    
-    menuToggle.addEventListener('click', toggleMobileMenu);
-    
-    document.querySelectorAll('.nav-list a').forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-    });
-    
-    document.addEventListener('click', (e) => {
-        if (!navList.contains(e.target) && !menuToggle.contains(e.target) && navList.classList.contains('active')) {
-            closeMobileMenu();
-        }
-    });
-}
-
-function toggleMobileMenu() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navList = document.querySelector('.nav-list');
-    
-    navList.classList.toggle('active');
-    menuToggle.innerHTML = navList.classList.contains('active') 
-        ? '<i class="fas fa-times" aria-hidden="true"></i>' 
-        : '<i class="fas fa-bars" aria-hidden="true"></i>';
-    
-    menuToggle.setAttribute('aria-expanded', navList.classList.contains('active'));
-}
-
-function closeMobileMenu() {
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navList = document.querySelector('.nav-list');
-    
-    navList.classList.remove('active');
-    menuToggle.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
-    menuToggle.setAttribute('aria-expanded', 'false');
-}
-
-// ============================================
-// MODAL DE AGENDAMENTO (CORRIGIDO)
-// ============================================
-function initModalAgendamento() {
-    const modal = document.getElementById('agendamentoModal');
-    const closeButton = modal?.querySelector('.close-modal');
-    
-    if (!modal) {
-        console.error('❌ Modal não encontrado! Verifique se o ID está correto.');
-        return;
-    }
-    
-    // Adicionar evento de abertura para TODOS os botões de agendamento
-    document.addEventListener('click', function(e) {
-        // Verificar se clicou em algum botão de agendamento
-        if (e.target.closest('#openAgendamento') || 
-            e.target.closest('#openAgendamento2') ||
-            e.target.closest('#openAgendamento3') ||
-            e.target.closest('.btn-agendar-teste') ||
-            (e.target.closest('.chat-option') && e.target.closest('.chat-option').getAttribute('data-option') === 'agendar') ||
-            (e.target.closest('.chat-option') && e.target.closest('.chat-option').getAttribute('data-action') === 'agendar-form')) {
-            
-            e.preventDefault();
-            openModal('agendamentoModal');
-        }
-    });
-    
-    closeButton?.addEventListener('click', closeModal);
-    
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target.classList.contains('close-modal')) {
-            closeModal();
-        }
-    });
-    
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeModal();
-    });
-    
-    // Formulário
-    const form = document.getElementById('agendamentoForm');
-    form?.addEventListener('submit', handleAgendamentoSubmit);
-    
-    // Máscara de telefone
-    const telefoneInput = document.getElementById('telefone');
-    if (telefoneInput) {
-        telefoneInput.addEventListener('input', formatarTelefone);
-    }
-}
-
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (!modal) {
-        console.error(`❌ Modal ${modalId} não encontrado!`);
-        return;
-    }
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    document.body.classList.add('modal-open');
-    
-    console.log('✅ Modal aberto:', modalId);
-}
-
-function closeModal() {
-    const modal = document.querySelector('.modal.active');
-    if (!modal) return;
-    
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    document.body.classList.remove('modal-open');
-    
-    // Resetar mensagem de sucesso se estiver visível
-    const successDiv = document.getElementById('successMessage');
-    const form = document.getElementById('agendamentoForm');
-    if (successDiv && form) {
-        successDiv.style.display = 'none';
-        form.style.display = 'block';
-    }
-}
-
-// ============================================
-// CHATBOT INTELIGENTE (CORRIGIDO)
-// ============================================
-function initChatbot() {
-    const chatbotToggle = document.querySelector('.chatbot-toggle');
-    const closeChatbot = document.querySelector('.close-chatbot');
-    const chatOptions = document.querySelectorAll('.chat-option');
-    const sendMessageBtn = document.getElementById('sendMessage');
-    const chatInput = document.getElementById('chatInput');
-    
-    if (!chatbotToggle) {
-        console.error('❌ Botão do chatbot não encontrado!');
-        return;
-    }
-    
-    // Botão de toggle do chatbot
-    chatbotToggle.addEventListener('click', toggleChatbot);
-    
-    // Botão de fechar chatbot
-    closeChatbot?.addEventListener('click', closeChatbotHandler);
-    
-    // Opções do chatbot
-    chatOptions.forEach(option => {
-        option.addEventListener('click', handleChatOptionClick);
-    });
-    
-    // Enviar mensagem
-    sendMessageBtn?.addEventListener('click', sendUserMessage);
-    
-    // Enviar mensagem com Enter
-    chatInput?.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendUserMessage();
-    });
-    
-    console.log('✅ Chatbot inicializado!');
-}
-
-function toggleChatbot() {
-    const chatbotContainer = document.querySelector('.chatbot-container');
-    if (!chatbotContainer) {
-        console.error('❌ Container do chatbot não encontrado!');
-        return;
-    }
-    
-    chatbotContainer.classList.toggle('active');
-    chatbotOpen = chatbotContainer.classList.contains('active');
-    
-    if (chatbotOpen) {
-        setTimeout(() => {
-            document.getElementById('chatInput')?.focus();
-        }, 300);
-    }
-    
-    console.log('🤖 Chatbot:', chatbotOpen ? 'Aberto' : 'Fechado');
-}
-
-function openChatbot() {
-    const chatbotContainer = document.querySelector('.chatbot-container');
-    if (chatbotContainer && !chatbotOpen) {
-        chatbotContainer.classList.add('active');
-        chatbotOpen = true;
-        
-        setTimeout(() => {
-            document.getElementById('chatInput')?.focus();
-        }, 300);
-    }
-}
-
-function closeChatbotHandler() {
-    const chatbotContainer = document.querySelector('.chatbot-container');
-    chatbotContainer?.classList.remove('active');
-    chatbotOpen = false;
-}
-
-function handleChatOptionClick(e) {
-    const optionType = e.currentTarget.getAttribute('data-option') || 
-                       e.currentTarget.getAttribute('data-action') ||
-                       e.currentTarget.getAttribute('data-faq');
-    
-    console.log('🤖 Opção selecionada:', optionType);
-    
-    switch(optionType) {
-        case 'agendar':
-        case 'agendar-form':
-            addBotMessage('Ótimo! Vou te ajudar a agendar uma consulta. Por favor, preencha o formulário que será aberto.');
-            setTimeout(() => {
-                closeChatbotHandler();
-                openModal('agendamentoModal');
-            }, 1500);
-            break;
-            
-        case 'servicos':
-            handleServicosOption();
-            break;
-            
-        case 'duvidas':
-            handleDuvidasOption();
-            break;
-            
-        case 'whatsapp':
-            handleWhatsAppOption();
-            break;
-            
-        case 'consulta':
-        case 'horario':
-        case 'plano':
-        case 'procedimento':
-            handleFaqClick(e);
-            break;
-            
-        default:
-            addBotMessage('Desculpe, não entendi. Pode reformular?');
-    }
-}
-
-// ... (MANTENHA TODAS AS OUTRAS FUNÇÕES DO CHATBOT DO SEU CÓDIGO ORIGINAL AQUI)
-// Inclua: handleServicosOption, handleDuvidasOption, handleFaqClick, 
-// handleWhatsAppOption, sendUserMessage, etc...
-
-// ============================================
-// FORMULÁRIO DE AGENDAMENTO
-// ============================================
-async function handleAgendamentoSubmit(e) {
+function handleAgendamentoSubmit(e) {
     e.preventDefault();
+    console.log('📋 Enviando formulário de agendamento...');
     
     const form = e.target;
-    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitBtn = form.querySelector('#btn-agendar');
     
-    // Validar campos obrigatórios
-    if (!validarFormularioAgendamento()) {
-        return;
-    }
-    
-    // Coletar dados
+    // Coletar dados do formulário
     const agendamentoData = {
         nome: document.getElementById('nome').value.trim(),
         telefone: document.getElementById('telefone').value.trim(),
@@ -601,106 +931,187 @@ async function handleAgendamentoSubmit(e) {
         action: 'agendarConsulta'
     };
     
-    // Desabilitar botão durante envio
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirmando...';
+    // Validação
+    if (!validarFormularioAgendamento(agendamentoData)) {
+        return;
+    }
     
-    try {
-        const response = await enviarParaGoogleCalendar(agendamentoData);
+    // Desabilitar botão durante envio
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirmando Agendamento...';
+    }
+    
+    // Simular envio (em produção, enviar para Google Script)
+    setTimeout(function() {
+        // Mostrar mensagem de sucesso
+        mostrarMensagemSucesso(agendamentoData);
         
-        if (response.success) {
-            mostrarMensagemSucesso(agendamentoData);
-            
-            // Resetar
-            form.reset();
-            horarioSelecionado = null;
-            
-            // Recarregar horários
-            if (dataSelecionada) {
-                setTimeout(() => carregarHorariosDisponiveis(dataSelecionada), 2000);
-            }
-            
-        } else {
-            throw new Error(response.message);
+        // Reabilitar botão
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-calendar-plus"></i> Confirmar Agendamento';
         }
         
-    } catch (error) {
-        console.error('Erro:', error);
-        showAlert(`❌ Erro: ${error.message}`, 'error');
-        mostrarFallbackContato(agendamentoData);
-        
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-calendar-plus"></i> Confirmar Agendamento';
-    }
+        console.log('✅ Agendamento simulado com sucesso:', agendamentoData);
+    }, 2000);
 }
 
-function validarFormularioAgendamento() {
-    const campos = [
-        { id: 'nome', nome: 'Nome Completo' },
-        { id: 'telefone', nome: 'Telefone' },
-        { id: 'email', nome: 'E-mail' },
-        { id: 'tipo-consulta', nome: 'Tipo de Consulta' }
-    ];
-    
-    for (const campo of campos) {
-        const elemento = document.getElementById(campo.id);
-        if (!elemento || !elemento.value.trim()) {
-            showAlert(`Por favor, preencha o campo "${campo.nome}"`, 'error');
-            elemento?.focus();
-            return false;
-        }
-    }
-    
-    if (!validateNome(document.getElementById('nome').value.trim())) {
-        showAlert('Por favor, insira um nome válido (mínimo 3 caracteres)', 'error');
+function validarFormularioAgendamento(data) {
+    // Validar nome
+    if (!data.nome || data.nome.length < 3) {
+        alert('Por favor, insira um nome completo válido (mínimo 3 caracteres)');
         return false;
     }
     
-    if (!validateTelefone(document.getElementById('telefone').value.trim())) {
-        showAlert('Por favor, insira um telefone válido com DDD', 'error');
+    // Validar telefone
+    const telefoneNumeros = data.telefone.replace(/\D/g, '');
+    if (!telefoneNumeros || telefoneNumeros.length < 10) {
+        alert('Por favor, insira um telefone válido com DDD');
         return false;
     }
     
-    if (!validateEmail(document.getElementById('email').value.trim())) {
-        showAlert('Por favor, insira um e-mail válido', 'error');
+    // Validar email
+    if (!data.email || !validateEmail(data.email)) {
+        alert('Por favor, insira um e-mail válido');
         return false;
     }
     
-    if (!horarioSelecionado) {
-        showAlert('Por favor, selecione um horário disponível', 'error');
+    // Validar tipo de consulta
+    if (!data.tipoConsulta) {
+        alert('Por favor, selecione o tipo de consulta');
+        return false;
+    }
+    
+    // Validar horário selecionado
+    if (!data.horario) {
+        alert('Por favor, selecione um horário disponível');
+        return false;
+    }
+    
+    // Validar termos
+    const lgpd = document.getElementById('lgpd');
+    const confirmacao = document.getElementById('confirmacao');
+    
+    if (!lgpd || !lgpd.checked) {
+        alert('Por favor, aceite a política de privacidade');
+        return false;
+    }
+    
+    if (!confirmacao || !confirmacao.checked) {
+        alert('Por favor, confirme que entendeu que o horário será reservado');
         return false;
     }
     
     return true;
 }
 
-async function enviarParaGoogleCalendar(data) {
-    try {
-        const response = await fetch(CONFIG.googleScriptUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-            mode: 'no-cors'
-        });
-        
-        return { 
-            success: true, 
-            message: 'Agendamento enviado para confirmação' 
-        };
-        
-    } catch (error) {
-        throw new Error('Não foi possível conectar ao sistema de agendamento');
+function mostrarMensagemSucesso(data) {
+    const form = document.getElementById('agendamentoForm');
+    const successDiv = document.getElementById('successMessage');
+    const successDetails = document.getElementById('successDetails');
+    
+    if (!form || !successDiv || !successDetails) {
+        console.error('❌ Elementos de sucesso não encontrados');
+        return;
     }
+    
+    // Formatar data para exibição
+    const dataFormatada = formatarDataParaExibicao(data.data);
+    
+    // Atualizar mensagem de sucesso
+    successDetails.innerHTML = `
+        <strong>Consulta agendada com sucesso!</strong><br><br>
+        📅 <strong>Data:</strong> ${dataFormatada}<br>
+        ⏰ <strong>Horário:</strong> ${data.horario}<br>
+        👤 <strong>Paciente:</strong> ${data.nome}<br>
+        📞 <strong>Contato:</strong> ${data.telefone}<br>
+        📧 <strong>E-mail:</strong> ${data.email}
+    `;
+    
+    // Mostrar div de sucesso e esconder formulário
+    form.style.display = 'none';
+    successDiv.style.display = 'block';
+    
+    // Adicionar funcionalidade para imprimir
+    const btnImprimir = successDiv.querySelector('.btn-secondary');
+    if (btnImprimir) {
+        btnImprimir.onclick = function() {
+            imprimirComprovante(data);
+        };
+    }
+    
+    console.log('✅ Mensagem de sucesso exibida');
+}
+
+function formatarDataParaExibicao(dataString) {
+    const [ano, mes, dia] = dataString.split('-');
+    return `${dia}/${mes}/${ano}`;
+}
+
+function imprimirComprovante(data) {
+    const dataFormatada = formatarDataParaExibicao(data.data);
+    const conteudo = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Comprovante de Agendamento - DermaCare</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .logo { font-size: 24px; font-weight: bold; color: #0a3d62; }
+                .title { color: #0ABAB5; margin: 20px 0; }
+                .details { border: 2px solid #0ABAB5; padding: 20px; border-radius: 10px; margin: 20px 0; }
+                .detail-row { margin: 10px 0; }
+                .footer { margin-top: 30px; text-align: center; color: #666; font-size: 12px; }
+                @media print {
+                    body { padding: 0; }
+                    .no-print { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <div class="logo">DermaCare Clínica Dermatológica</div>
+                <h1 class="title">COMPROVANTE DE AGENDAMENTO</h1>
+            </div>
+            <div class="details">
+                <div class="detail-row"><strong>Paciente:</strong> ${data.nome}</div>
+                <div class="detail-row"><strong>Telefone:</strong> ${data.telefone}</div>
+                <div class="detail-row"><strong>E-mail:</strong> ${data.email}</div>
+                <div class="detail-row"><strong>Data da Consulta:</strong> ${dataFormatada}</div>
+                <div class="detail-row"><strong>Horário:</strong> ${data.horario}</div>
+                <div class="detail-row"><strong>Tipo de Consulta:</strong> ${data.tipoConsulta}</div>
+                <div class="detail-row"><strong>Observações:</strong> ${data.mensagem || 'Nenhuma'}</div>
+            </div>
+            <div class="footer">
+                <p>DermaCare • Av. Paulista, 1000 - São Paulo • (11) 99999-9999</p>
+                <p>Comprovante gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+                <button class="no-print" onclick="window.close()">Fechar</button>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    const janela = window.open('', '_blank');
+    janela.document.write(conteudo);
+    janela.document.close();
+    
+    // Aguardar carregamento e imprimir
+    setTimeout(function() {
+        janela.print();
+    }, 500);
 }
 
 // ============================================
-// FUNÇÕES UTILITÁRIAS
+// 6. FUNÇÕES UTILITÁRIAS
 // ============================================
 function formatarTelefone(e) {
     let value = e.target.value.replace(/\D/g, '');
     
-    if (value.length > 11) value = value.slice(0, 11);
+    if (value.length > 11) {
+        value = value.slice(0, 11);
+    }
     
     if (value.length > 10) {
         value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
@@ -715,67 +1126,302 @@ function formatarTelefone(e) {
     e.target.value = value;
 }
 
-function mostrarMensagemSucesso(data) {
-    const form = document.getElementById('agendamentoForm');
-    const successDiv = document.getElementById('successMessage');
-    const successDetails = document.getElementById('successDetails');
-    
-    if (!form || !successDiv || !successDetails) return;
-    
-    const dataFormatada = formatarDataParaExibicao(data.data);
-    
-    successDetails.innerHTML = `
-        <strong>Consulta agendada para:</strong><br>
-        📅 <strong>Data:</strong> ${dataFormatada}<br>
-        ⏰ <strong>Horário:</strong> ${data.horario}<br>
-        👤 <strong>Paciente:</strong> ${data.nome}<br>
-        📞 <strong>Contato:</strong> ${data.telefone}
-    `;
-    
-    form.style.display = 'none';
-    successDiv.style.display = 'block';
-}
-
-function formatarDataParaExibicao(dataString) {
-    const [ano, mes, dia] = dataString.split('-');
-    return `${dia}/${mes}/${ano}`;
-}
-
-function validateNome(nome) {
-    return nome && nome.length >= 3;
-}
-
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 }
 
-function validateTelefone(telefone) {
-    const re = /^(\d{10,11})$/;
-    return re.test(telefone.replace(/\D/g, ''));
+// ============================================
+// 7. CARROSSEL DE DEPOIMENTOS
+// ============================================
+function initCarrosselDepoimentos() {
+    const prevBtn = document.querySelector('.carrossel-btn.prev');
+    const nextBtn = document.querySelector('.carrossel-btn.next');
+    const indicadores = document.querySelectorAll('.indicador');
+    
+    if (!prevBtn || !nextBtn) {
+        console.warn('⚠️ Botões do carrossel não encontrados');
+        return;
+    }
+    
+    prevBtn.addEventListener('click', showPreviousDepoimento);
+    nextBtn.addEventListener('click', showNextDepoimento);
+    
+    indicadores.forEach(function(indicador, index) {
+        indicador.addEventListener('click', function() {
+            showDepoimento(index);
+        });
+    });
+    
+    // Iniciar rotação automática
+    startCarrosselAutoRotation();
+    
+    // Pausar ao passar o mouse
+    const container = document.querySelector('.depoimentos-container');
+    if (container) {
+        container.addEventListener('mouseenter', stopCarrosselAutoRotation);
+        container.addEventListener('mouseleave', startCarrosselAutoRotation);
+    }
+    
+    console.log('✅ Carrossel de depoimentos configurado');
 }
 
-function showAlert(message, type = 'info') {
-    // ... (mantenha a função showAlert do seu código original)
+function showPreviousDepoimento() {
+    currentDepoimento = (currentDepoimento - 1 + CONFIG.totalDepoimentos) % CONFIG.totalDepoimentos;
+    updateCarrossel();
+}
+
+function showNextDepoimento() {
+    currentDepoimento = (currentDepoimento + 1) % CONFIG.totalDepoimentos;
+    updateCarrossel();
+}
+
+function showDepoimento(index) {
+    if (index >= 0 && index < CONFIG.totalDepoimentos) {
+        currentDepoimento = index;
+        updateCarrossel();
+    }
+}
+
+function updateCarrossel() {
+    const depoimentos = document.querySelectorAll('.depoimento-card');
+    const indicadores = document.querySelectorAll('.indicador');
+    
+    depoimentos.forEach(function(depoimento, index) {
+        depoimento.classList.toggle('active', index === currentDepoimento);
+    });
+    
+    indicadores.forEach(function(indicador, index) {
+        indicador.classList.toggle('active', index === currentDepoimento);
+    });
+}
+
+function startCarrosselAutoRotation() {
+    stopCarrosselAutoRotation();
+    carrosselInterval = setInterval(showNextDepoimento, CONFIG.carrosselInterval);
+}
+
+function stopCarrosselAutoRotation() {
+    if (carrosselInterval) {
+        clearInterval(carrosselInterval);
+        carrosselInterval = null;
+    }
 }
 
 // ============================================
-// FUNÇÕES RESTANTES (MANTENHA DO SEU CÓDIGO)
+// 8. FORMULÁRIOS GERAIS
 // ============================================
-// Inclua aqui:
-// - initCarrosselDepoimentos()
-// - initFormularios()
-// - initTestePele()
-// - initScrollSuave()
-// - initImageOptimization()
-// - createCallButton()
-// - E todas as outras funções do chatbot que não coloquei acima
+function initFormularios() {
+    // Formulário de contato
+    const contatoForm = document.getElementById('contatoForm');
+    if (contatoForm) {
+        contatoForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Mensagem enviada com sucesso! Entraremos em contato em breve.');
+            this.reset();
+        });
+    }
+    
+    // Newsletter
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = this.querySelector('input[type="email"]');
+            if (emailInput && validateEmail(emailInput.value)) {
+                alert('Obrigado por se inscrever em nossa newsletter!');
+                emailInput.value = '';
+            } else {
+                alert('Por favor, insira um e-mail válido.');
+            }
+        });
+    }
+    
+    console.log('✅ Formulários gerais configurados');
+}
 
 // ============================================
-// EXPORTAÇÕES PARA HTML
+// 9. SCROLL SUAVE
 // ============================================
-window.selecionarHorario = selecionarHorario;
+function initScrollSuave() {
+    document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#' || href === '#inicio') return;
+            
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+                
+                // Fechar menu mobile se estiver aberto
+                const navList = document.querySelector('.nav-list');
+                const menuToggle = document.querySelector('.menu-toggle');
+                if (navList && navList.classList.contains('active')) {
+                    navList.classList.remove('active');
+                    if (menuToggle) {
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                }
+            }
+        });
+    });
+    
+    console.log('✅ Scroll suave configurado');
+}
+
+// ============================================
+// 10. TESTE DE PELE
+// ============================================
+function initTestePele() {
+    const opcoes = document.querySelectorAll('.opcao');
+    if (opcoes.length === 0) return;
+    
+    opcoes.forEach(function(opcao) {
+        opcao.addEventListener('click', function() {
+            // Remover seleção anterior
+            opcoes.forEach(function(o) {
+                o.classList.remove('selecionada');
+            });
+            
+            // Selecionar esta opção
+            this.classList.add('selecionada');
+            
+            // Mostrar resultado
+            const tipo = this.getAttribute('data-tipo');
+            const resultadoSpan = document.getElementById('tipo-pele');
+            if (resultadoSpan) {
+                const tipos = {
+                    'oleosa': 'Pele Oleosa',
+                    'seca': 'Pele Seca', 
+                    'mista': 'Pele Mista',
+                    'normal': 'Pele Normal',
+                    'sensivel': 'Pele Sensível',
+                    'reativa': 'Pele Reativa'
+                };
+                resultadoSpan.textContent = tipos[tipo] || 'Pele Normal';
+                
+                // Mostrar seção de resultado
+                const resultadoDiv = document.querySelector('.resultado');
+                if (resultadoDiv) {
+                    resultadoDiv.classList.add('mostrar');
+                }
+            }
+        });
+    });
+    
+    console.log('✅ Teste de pele configurado');
+}
+
+// ============================================
+// 11. BOTÃO DE LIGAR (MOBILE)
+// ============================================
+function createCallButton() {
+    // Verificar se já existe
+    if (document.querySelector('.ligar-btn')) return;
+    
+    const ligarBtn = document.createElement('a');
+    ligarBtn.href = `tel:${CONFIG.clinicInfo.phone.replace(/\D/g, '')}`;
+    ligarBtn.className = 'ligar-btn';
+    ligarBtn.innerHTML = '<i class="fas fa-phone"></i>';
+    ligarBtn.setAttribute('aria-label', 'Ligar para clínica');
+    
+    // Estilos
+    ligarBtn.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: #25D366;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.5rem;
+        text-decoration: none;
+        box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+        z-index: 999;
+        transition: all 0.3s;
+    `;
+    
+    // Efeitos hover
+    ligarBtn.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
+        this.style.backgroundColor = '#128C7E';
+    });
+    
+    ligarBtn.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+        this.style.backgroundColor = '#25D366';
+    });
+    
+    document.body.appendChild(ligarBtn);
+    console.log('✅ Botão de ligar para mobile criado');
+}
+
+// ============================================
+// 12. FUNÇÕES DE SUPORTE
+// ============================================
+function initImageOptimization() {
+    // Esta função pode ser usada para lazy loading de imagens
+    // Implementação básica
+    const imagens = document.querySelectorAll('img[data-src]');
+    if (imagens.length > 0 && 'IntersectionObserver' in window) {
+        const imgObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.add('loaded');
+                    imgObserver.unobserve(img);
+                }
+            });
+        });
+        
+        imagens.forEach(function(img) {
+            imgObserver.observe(img);
+        });
+    }
+}
+
+// ============================================
+// 13. FUNÇÕES EXPORTADAS PARA HTML
+// ============================================
+// Estas funções são chamadas diretamente do HTML
+window.selecionarHorario = function(horario, elemento) {
+    // Desselecionar todos
+    document.querySelectorAll('.horario-btn').forEach(function(btn) {
+        btn.classList.remove('selecionado');
+    });
+    
+    // Selecionar este
+    elemento.classList.add('selecionado');
+    horarioSelecionado = horario;
+    
+    // Atualizar campo oculto
+    const campoHorario = document.getElementById('horario-escolhido');
+    if (campoHorario) {
+        campoHorario.value = horario;
+    }
+    
+    console.log('⏰ Horário selecionado:', horario);
+};
+
 window.closeModal = closeModal;
 window.openModal = openModal;
 window.toggleChatbot = toggleChatbot;
 window.closeChatbotHandler = closeChatbotHandler;
+
+// ============================================
+// INICIALIZAÇÃO FINAL
+// ============================================
+console.log('🎉 Sistema DermaCare carregado com sucesso!');
+console.log('📞 Telefone:', CONFIG.clinicInfo.phone);
+console.log('⏰ Horários fixos:', CONFIG.horariosFixos.join(', '));
+console.log('🚀 Pronto para uso!');

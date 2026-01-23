@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso - DermaCare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+
+    <style>
+        /* Estilos específicos para termos */
+        .termos-container {
+            max-width: 900px;
+            margin: 100px auto 50px;
+            padding: 0 20px;
+        }
+
+        .termos-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #0ABAB5;
+        }
+
+        .termos-header h1 {
+            color: #0a3d62;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .termos-header .data-efeito {
+            color: #666;
+            font-style: italic;
+        }
+
+        .termos-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .termos-section {
+            margin-bottom: 35px;
+        }
+
+        .termos-section h2 {
+            color: #0a3d62;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .termos-section h3 {
+            color: #0ABAB5;
+            font-size: 1.2rem;
+            margin: 20px 0 10px;
+        }
+
+        .termos-section p {
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .termos-section ul,
+        .termos-section ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+
+        .termos-section li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            padding-left: 5px;
+        }
+
+        .termos-section li strong {
+            color: #0a3d62;
+        }
+
+        .aviso-importante {
+            background: #fff8e1;
+            border: 2px solid #FFC107;
+            border-left: 6px solid #FF9800;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .aviso-importante h4 {
+            color: #5d4037;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .definicao-box {
+            background: #f0f9ff;
+            border: 1px solid #0ABAB5;
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .definicao-box dt {
+            font-weight: 600;
+            color: #0a3d62;
+            margin-top: 10px;
+        }
+
+        .definicao-box dd {
+            margin-left: 20px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .voltar-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #0ABAB5;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .voltar-btn:hover {
+            background: #0a8c88;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(10, 186, 181, 0.3);
+        }
+
+        .numero-artigo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #0ABAB5;
+            color: white;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .termos-container {
+                margin-top: 80px;
+            }
+
+            .termos-content {
+                padding: 25px;
+            }
+
+            .termos-header h1 {
+                font-size: 2rem;
+            }
+
+            .termos-section h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><i class="fas fa-stethoscope"></i> Derma<span>Care</span></h1>
+            </div>
+
+            <nav class="nav">
+                <button class="menu-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-list">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="index.html#sobre">Sobre</a></li>
+                    <li><a href="index.html#servicos">Serviços</a></li>
+                    <li><a href="index.html#tecnologias">Tecnologias</a></li>
+                    <li><a href="index.html#contato">Contato</a></li>
+                </ul>
+                <a href="index.html#agendamento" class="btn-agendar">
+                    <i class="fas fa-calendar-alt"></i> Agendar Consulta
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Conteúdo dos Termos de Uso -->
+    <main class="termos-container">
+        <div class="termos-header">
+            <h1><i class="fas fa-file-contract"></i> Termos e Condições de Uso</h1>
+            <p class="data-efeito">Em vigor a partir de Janeiro de 2024</p>
+        </div>
+
+        <div class="termos-content">
+            <div class="aviso-importante">
+                <h4><i class="fas fa-exclamation-triangle"></i> LEIA ATENTAMENTE</h4>
+                <p>Ao utilizar nosso site e serviços, você concorda integralmente com estes Termos de Uso. Se não
+                    concordar com qualquer parte destes termos, por favor, não utilize nossos serviços.</p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">1</span> Aceitação dos Termos</h2>
+                <p>Estes Termos de Uso regulam a utilização do website da <strong>DermaCare Clínica
+                        Dermatológica</strong>, localizado em <strong>Av. Paulista, 1000 - Bela Vista, São Paulo -
+                        SP</strong>, e todos os serviços oferecidos através dele.</p>
+
+                <p>Ao acessar, navegar ou utilizar qualquer funcionalidade deste site, você declara que:</p>
+                <ul>
+                    <li>Leu, compreendeu e aceitou integralmente estes Termos;</li>
+                    <li>Tem capacidade legal para celebrar este acordo;</li>
+                    <li>Fornecerá informações verdadeiras e precisas;</li>
+                    <li>Utilizará o site apenas para fins legítimos.</li>
+                </ul>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">2</span> Definições</h2>
+                <div class="definicao-box">
+                    <dl>
+                        <dt>"Site" ou "Website"</dt>
+                        <dd>Refere-se ao domínio dermacare.com.br e todas suas subpáginas.</dd>
+
+                        <dt>"Clínica" ou "Nós"</dt>
+                        <dd>Refere-se à DermaCare Clínica Dermatológica, pessoa jurídica responsável pelo site.</dd>
+
+                        <dt>"Usuário" ou "Você"</dt>
+                        <dd>Qualquer pessoa que acesse, navegue ou utilize os serviços do site.</dd>
+
+                        <dt>"Paciente"</dt>
+                        <dd>Usuário que realiza agendamento de consulta ou utiliza serviços médicos.</dd>
+
+                        <dt>"Serviços"</dt>
+                        <dd>Funcionalidades oferecidas pelo site, incluindo agendamento online, informações médicas,
+                            chatbot, etc.</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">3</span> Serviços Oferecidos</h2>
+
+                <h3>3.1 Agendamento Online</h3>
+                <p>Oferecemos sistema de agendamento de consultas com as seguintes características:</p>
+                <ul>
+                    <li><strong>Horários disponíveis:</strong> Segunda a sexta, das 9h às 18h (exceto almoço 12h-14h)
+                    </li>
+                    <li><strong>Duração das consultas:</strong> 60 minutos padrão</li>
+                    <li><strong>Confirmação:</strong> O agendamento só é confirmado após confirmação por nossa equipe
+                    </li>
+                    <li><strong>Cancelamentos:</strong> Devem ser feitos com pelo menos 24h de antecedência</li>
+                </ul>
+
+                <h3>3.2 Informações Médicas</h3>
+                <p>As informações contidas neste site têm caráter <strong>estritamente informativo e educativo</strong>
+                    e <strong>NÃO substituem</strong> a consulta médica presencial.</p>
+
+                <div class="aviso-importante">
+                    <h4><i class="fas fa-stethoscope"></i> AVISO MÉDICO IMPORTANTE</h4>
+                    <p><strong>EM CASO DE EMERGÊNCIA MÉDICA, PROCURE IMEDIATAMENTE ATENDIMENTO PRESENCIAL EM
+                            PRONTO-SOCORRO.</strong> Este site não oferece atendimento de emergência.</p>
+                </div>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">4</span> Responsabilidades do Usuário</h2>
+
+                <p>O usuário compromete-se a:</p>
+                <ol>
+                    <li><strong>Fornecer informações verdadeiras</strong> no cadastro e agendamento;</li>
+                    <li><strong>Manter atualizados</strong> seus dados de contato;</li>
+                    <li><strong>Respeitar os horários</strong> agendados, chegando com antecedência;</li>
+                    <li><strong>Utilizar o site apenas para fins legais</strong> e éticos;</li>
+                    <li><strong>Não realizar agendamentos fraudulentos</strong> ou em nome de terceiros sem autorização;
+                    </li>
+                    <li><strong>Não utilizar robots, crawlers ou scripts</strong> para acessar o site;</li>
+                    <li><strong>Proteger suas credenciais de acesso</strong> (se houver sistema de login);</li>
+                    <li><strong>Reportar vulnerabilidades</strong> encontradas no site.</li>
+                </ol>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">5</span> Propriedade Intelectual</h2>
+
+                <h3>5.1 Direitos Autorais</h3>
+                <p>Todo o conteúdo do site, incluindo textos, imagens, logotipos, layout, código fonte e design, é
+                    propriedade da DermaCare ou de seus licenciadores e está protegido pelas leis de direitos autorais.
+                </p>
+
+                <h3>5.2 Marcas Registradas</h3>
+                <p>As marcas "DermaCare", logotipo e slogans são marcas registradas da clínica. É proibido seu uso não
+                    autorizado.</p>
+
+                <h3>5.3 Uso Permitido</h3>
+                <p>Você pode:</p>
+                <ul>
+                    <li>Acessar e navegar pelo site para uso pessoal;</li>
+                    <li>Compartilhar links para páginas do site;</li>
+                    <li>Imprimir conteúdo para referência pessoal.</li>
+                </ul>
+
+                <p>Você <strong>NÃO pode</strong>:</p>
+                <ul>
+                    <li>Copiar, modificar ou distribuir o conteúdo sem autorização;</li>
+                    <li>Utilizar o conteúdo para fins comerciais;</li>
+                    <li>Remover avisos de direitos autorais;</li>
+                    <li>Criar obras derivadas baseadas no nosso conteúdo.</li>
+                </ul>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">6</span> Limitação de Responsabilidade</h2>
+
+                <h3>6.1 Disponibilidade do Site</h3>
+                <p>Embora nos esforcemos para manter o site sempre disponível, não garantimos acesso ininterrupto.
+                    Podemos realizar manutenções periódicas que podem temporariamente tornar o site indisponível.</p>
+
+                <h3>6.2 Conteúdo Médico</h3>
+                <p>As informações médicas fornecidas no site são para fins educativos. <strong>Não garantimos</strong>
+                    que estas informações sejam completas, atualizadas ou adequadas para seu caso específico.</p>
+
+                <h3>6.3 Agendamentos</h3>
+                <p>O sistema de agendamento online é uma ferramenta de conveniência. A confirmação final da consulta
+                    está sujeita à disponibilidade do médico e à análise da nossa equipe.</p>
+
+                <h3>6.4 Terceiros</h3>
+                <p>Não nos responsabilizamos por:</p>
+                <ul>
+                    <li>Sites de terceiros linkados do nosso site;</li>
+                    <li>Ações de provedores de serviços (Google, etc.);</li>
+                    <li>Problemas técnicos do seu dispositivo ou conexão.</li>
+                </ul>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">7</span> Privacidade e Proteção de Dados</h2>
+
+                <p>O tratamento de dados pessoais é regido pela nossa <a href="politica-privacidade.html"
+                        target="_blank">Política de Privacidade</a>, que faz parte integrante destes Termos.</p>
+
+                <h3>7.1 Dados de Saúde</h3>
+                <p>Dados de saúde são considerados <strong>dados sensíveis</strong> pela LGPD e recebem proteção
+                    especial. Seus dados de saúde só serão utilizados para fins médicos e com seu consentimento
+                    explícito.</p>
+
+                <h3>7.2 Segurança</h3>
+                <p>Implementamos medidas de segurança técnicas e organizacionais para proteger seus dados, mas não
+                    podemos garantir segurança absoluta na internet.</p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">8</span> Pagamentos e Custos</h2>
+
+                <h3>8.1 Consultas</h3>
+                <p>Os valores das consultas são informados durante o agendamento e podem variar conforme:</p>
+                <ul>
+                    <li>Tipo de consulta (primeira, retorno, procedimento);</li>
+                    <li>Convênio médico (se aplicável);</li>
+                    <li>Procedimentos adicionais solicitados.</li>
+                </ul>
+
+                <h3>8.2 Formas de Pagamento</h3>
+                <p>Aceitamos as principais formas de pagamento, que serão informadas durante a confirmação do
+                    agendamento.</p>
+
+                <h3>8.3 Reembolsos</h3>
+                <p>Políticas de reembolso seguem a legislação vigente e as regras do convênio médico (quando aplicável).
+                </p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">9</span> Cancelamentos e Remarcações</h2>
+
+                <h3>9.1 Por parte do Paciente</h3>
+                <p>Cancelamentos devem ser feitos com <strong>pelo menos 24 horas de antecedência</strong>.
+                    Cancelamentos em cima da hora podem acarretar em:</p>
+                <ul>
+                    <li>Multa administrativa;</li>
+                    <li>Restrição para novos agendamentos;</li>
+                    <li>Perda do horário reservado.</li>
+                </ul>
+
+                <h3>9.2 Por parte da Clínica</h3>
+                <p>Em casos excepcionais, podemos precisar cancelar ou remarcar consultas. Nesses casos, entraremos em
+                    contato para oferecer alternativas.</p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">10</span> Chatbot e Atendimento Virtual</h2>
+
+                <p>O chatbot disponível no site:</p>
+                <ul>
+                    <li>É uma ferramenta de atendimento automatizado;</li>
+                    <li><strong>NÃO oferece diagnóstico médico</strong>;</li>
+                    <li>Fornece informações gerais sobre serviços e agendamento;</li>
+                    <li>As conversas podem ser registradas para melhoria do serviço;</li>
+                    <li>Não substitui o atendimento humano quando necessário.</li>
+                </ul>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">11</span> Modificações nos Termos</h2>
+
+                <p>Reservamo-nos o direito de modificar estes Termos a qualquer momento. As alterações serão:</p>
+                <ul>
+                    <li>Publicadas nesta página com nova data de vigência;</li>
+                    <li>Comunicadas aos usuários registrados por e-mail (quando aplicável);</li>
+                    <li>Efetivas imediatamente após publicação, exceto para alterações substanciais.</li>
+                </ul>
+
+                <p>O uso continuado do site após modificações constitui aceitação dos novos Termos.</p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">12</span> Lei Aplicável e Foro</h2>
+
+                <p>Estes Termos são regidos pelas leis brasileiras. Qualquer disputa será resolvida no Foro da Comarca
+                    de São Paulo/SP.</p>
+            </div>
+
+            <div class="termos-section">
+                <h2><span class="numero-artigo">13</span> Disposições Gerais</h2>
+
+                <h3>13.1 Integralidade</h3>
+                <p>Estes Termos, juntamente com a Política de Privacidade, constituem o acordo completo entre você e a
+                    DermaCare.</p>
+
+                <h3>13.2 Tolerância</h3>
+                <p>A não exigência do cumprimento de qualquer cláusula não constitui renúncia a direitos.</p>
+
+                <h3>13.3 Divisibilidade</h3>
+                <p>Se qualquer parte destes Termos for considerada inválida, as demais permanecem válidas.</p>
+
+                <h3>13.4 Contato</h3>
+                <p>Para questões sobre estes Termos:</p>
+                <ul>
+                    <li><strong>E-mail:</strong> juridico@dermacare.com.br</li>
+                    <li><strong>Telefone:</strong> (11) 99999-9999</li>
+                    <li><strong>Endereço:</strong> Av. Paulista, 1000 - Bela Vista, São Paulo - SP</li>
+                </ul>
+            </div>
+
+            <div class="aviso-importante">
+                <h4><i class="fas fa-check-circle"></i> DECLARAÇÃO DE CIÊNCIA</h4>
+                <p><strong>EU DECLARO QUE LI, COMPREENDI E ACEITO INTEGRALMENTE ESTES TERMOS E CONDIÇÕES DE
+                        USO.</strong></p>
+                <p>Data implícita de aceitação: Data do primeiro uso dos serviços.</p>
+            </div>
+
+            <a href="index.html" class="voltar-btn">
+                <i class="fas fa-arrow-left"></i> Voltar para o Site
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <h2><i class="fas fa-stethoscope"></i> Derma<span>Care</span></h2>
+                    </div>
+                    <p class="footer-desc">Clínica dermatológica especializada em tratamentos de pele, cabelo e unhas.
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Documentos Legais</h3>
+                    <ul class="footer-links">
+                        <li><a href="politica-privacidade.html">Política de Privacidade</a></li>
+                        <li><a href="termos-uso.html">Termos de Uso</a></li>
+                        <li><a href="index.html#contato">Contato</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Informações</h3>
+                    <ul class="footer-links">
+                        <li>CNPJ: 12.345.678/0001-90</li>
+                        <li>CRM-SP: 123456</li>
+                        <li>Responsável Técnico: Dra. Mariana Santos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 DermaCare Clínica Dermatológica. Todos os direitos reservados.</p>
+                    <div class="footer-legal">
+                        <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>
+                        <span>|</span>
+                        <a href="termos-uso.html" target="_blank">Termos de Uso</a>
+                        <span>|</span>
+                        <a href="politica-agendamento.html" target="_blank">Política de Agendamento</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript para menu mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navList = document.querySelector('.nav-list');
+
+            if (menuToggle && navList) {
+                menuToggle.addEventListener('click', function () {
+                    navList.classList.toggle('active');
+                    menuToggle.innerHTML = navList.classList.contains('active')
+                        ? '<i class="fas fa-times"></i>'
+                        : '<i class="fas fa-bars"></i>';
+                    menuToggle.setAttribute('aria-expanded', navList.classList.contains('active'));
+                });
+
+                // Fechar menu ao clicar em um link
+                document.querySelectorAll('.nav-list a').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        navList.classList.remove('active');
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    });
+                });
+
+                // Fechar menu ao clicar fora
+                document.addEventListener('click', function (e) {
+                    if (!navList.contains(e.target) && !menuToggle.contains(e.target) && navList.classList.contains('active')) {
+                        navList.classList.remove('active');
+                        menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                        menuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
