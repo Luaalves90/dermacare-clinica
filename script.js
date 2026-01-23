@@ -29,7 +29,7 @@ const CONFIG = {
     // DURAÇÃO DA CONSULTA EM MINUTOS
     duracaoConsulta: 60,
     // URL DO GOOGLE APPS SCRIPT
-    googleScriptUrl: 'https://script.google.com/macros/s/AKfycbxuCy0dA-TmHg4XRn3AIV51Q_5s1afssQrWPq3ehX5q30iuxpzRdPsv6TTFDPqSjrU/exec'
+    googleScriptUrl: 'https://script.google.com/macros/s/AKfycbwIujv6emf2BD9lqlQMJgq42Zidl0DNkjD6C38puvEuadu3hZD28mxZ-4sRnaKrknfG/exec'
 };
 
 let currentDepoimento = 0;
