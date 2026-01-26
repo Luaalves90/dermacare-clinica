@@ -23,7 +23,12 @@ Site profissional para clínica dermatológica com sistema de agendamento online
 ## 📁 Estrutura do Projeto
 dermacare-clinica/
 ├── index.html # Página principal
+
 ├── style.css # Estilos
+
 ├── script.js # Código JavaScript
+
 ├── img/ # Imagens da clínica
+
 └── LICENSE.md # Licença de uso
+
